@@ -32,10 +32,11 @@ export class ListService {
         });
 
         for (const calc of ingredientlist) {
-          ingredientAllCost =
+          ingredientAllCost = +(
             +ingredientAllCost +
             +calc.ingredientCount *
-              (calc.market.currentMinPrice / calc.market.bundle);
+              (calc.market.currentMinPrice / calc.market.bundle)
+          ).toFixed(2);
         }
 
         calclist = [
@@ -44,7 +45,7 @@ export class ListService {
             id: listCreation[i].id,
             itemName: listCreation[i].name,
             currentMinPrice: listCreation[i].market.currentMinPrice || 0,
-            ingredientAllCost: ingredientAllCost,
+            ingredientAllCost: ingredientAllCost * 100,
             createCost: listCreation[i].createCost,
             enargy: listCreation[i].energy,
             createBundle: listCreation[i].createBundle,
@@ -70,19 +71,19 @@ export class ListService {
         });
 
         for (const calc of ingredientlist) {
-          ingredientAllCost =
+          ingredientAllCost = +(
             +ingredientAllCost +
             +calc.ingredientCount *
-              (calc.market.currentMinPrice / calc.market.bundle);
+              (calc.market.currentMinPrice / calc.market.bundle)
+          ).toFixed(2);
         }
-
         calclist = [
           ...calclist,
           {
             id: listCreation[i].id,
             itemName: listCreation[i].name,
             currentMinPrice: listCreation[i].market.currentMinPrice,
-            ingredientAllCost: ingredientAllCost,
+            ingredientAllCost: ingredientAllCost * 100,
             createCost: listCreation[i].createCost,
             enargy: listCreation[i].energy,
             createBundle: listCreation[i].createBundle,

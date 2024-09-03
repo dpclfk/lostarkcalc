@@ -18,6 +18,7 @@ import { DetailitemModule } from './detailitem/detailitem.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { CategoryModule } from './category/category.module';
 import { MarketModule } from './market/market.module';
+import { LastreqModule } from './lastreq/lastreq.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { MarketModule } from './market/market.module';
     RecipeModule,
     CategoryModule,
     MarketModule,
+    LastreqModule,
   ],
   controllers: [AppController],
   providers: [AppService, BasicvalueService],
