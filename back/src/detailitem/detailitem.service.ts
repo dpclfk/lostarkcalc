@@ -35,6 +35,7 @@ export class DetailitemService {
       createTime: number;
       createBundle: number;
       categoryId: number;
+      marketBundle: number;
       icon: string;
     } = {
       id: listCreation.id,
@@ -45,6 +46,7 @@ export class DetailitemService {
       createTime: listCreation.createTime,
       createBundle: listCreation.createBundle,
       categoryId: listCreation.category.id,
+      marketBundle: listCreation.market.bundle,
       icon: listCreation.icon.icon,
     };
 

@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Lastreq } from "../lib/listaxios";
 import serverbase from "../lib/server";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export interface List {
   id: number;
@@ -21,10 +22,12 @@ export interface CateList {
 }
 
 const Main = (): JSX.Element => {
+  const navigate = useNavigate();
+
   const admin = false;
 
-  const [category, setcategory] = useState<number[]>([]);
-  const [search, setsearch] = useState<string>("");
+  const [category, setCategory] = useState<number[]>([]);
+  const [search, setSearch] = useState<string>("");
 
   const cate: { id: number; categoryName: string }[] = [
     { id: 0, categoryName: "관심" },
@@ -59,7 +62,7 @@ const Main = (): JSX.Element => {
   useEffect(() => {
     queryclient.invalidateQueries({ queryKey: ["list"] });
     queryclient.invalidateQueries({ queryKey: ["lastreq"] });
-  }, [category, search]);
+  }, [category, search, queryclient]);
 
   return (
     <div className="m-auto w-11/12 min-w-[40rem]">
@@ -86,7 +89,7 @@ const Main = (): JSX.Element => {
             type="text"
             placeholder="레시피"
             value={search}
-            onChange={(e) => setsearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
           />
           <button
             className="bg-layoutcolor text-white rounded px-4 py-1"
@@ -108,8 +111,8 @@ const Main = (): JSX.Element => {
                   }`}
                   onClick={() => {
                     category.indexOf(item.id) === -1
-                      ? setcategory([...category, item.id])
-                      : setcategory(category.filter((element) => element !== item.id));
+                      ? setCategory([...category, item.id])
+                      : setCategory(category.filter((element) => element !== item.id));
                   }}
                 >
                   <div>{item.categoryName}</div>
@@ -141,6 +144,9 @@ const Main = (): JSX.Element => {
                 <div
                   key={idx}
                   className="flex border-solid border-t-[1px] border-t-footercolor leading-8 min-w-[60rem]"
+                  onClick={() => {
+                    navigate(`${item.id}`);
+                  }}
                 >
                   <div className="w-8 py-4">별</div>
                   <div className="flex-1 text-start flex gap-4">
@@ -149,20 +155,23 @@ const Main = (): JSX.Element => {
                       src={`https://cdn-lostark.game.onstove.com/efui_iconatlas/${item.icon}`}
                       alt="recipe img"
                     />
-                    <div className="py-4 ">{item.itemName}</div>
+                    <div className="py-4">{item.itemName}</div>
                   </div>
-                  <div className="w-32 py-4">시세{item.currentMinPrice}</div>
+                  {/* 시세 */}
+                  <div className="w-32 py-4">{item.currentMinPrice}</div>
+                  {/* 제작비용 */}
                   <div className="w-32 py-4">
-                    제작비용{(item.ingredientAllCost + item.createCost * 100) / 100}
+                    {(item.ingredientAllCost + item.createCost * 100) / 100}
                   </div>
+                  {/* 차익 */}
                   <div className="w-32 py-4">
-                    차익
                     {(
                       Math.floor(item.currentMinPrice * 0.95) * item.createBundle -
                       item.ingredientAllCost / 100 -
                       item.createCost
                     ).toFixed(2)}
                   </div>
+                  {/* 원가 이익률 */}
                   <div className="w-32 py-4">
                     {(
                       (+(
@@ -176,6 +185,7 @@ const Main = (): JSX.Element => {
                     ).toFixed(2)}
                     %
                   </div>
+                  {/* 활동력 이익률 */}
                   <div className="w-32 py-4">
                     {(
                       (+(
@@ -188,6 +198,7 @@ const Main = (): JSX.Element => {
                     ).toFixed(2)}
                     %
                   </div>
+                  {/* 직접사용시 이득 손해 판단 */}
                   <div className="w-20 py-4">
                     {item.currentMinPrice * 3 -
                       (item.ingredientAllCost + item.createCost * 100) / 100 >
@@ -195,6 +206,7 @@ const Main = (): JSX.Element => {
                       ? "이득"
                       : "손해"}
                   </div>
+                  {/* 제작후 판매시 이득 손해 판단 */}
                   <div className="w-20 py-4">
                     {+(
                       Math.floor(item.currentMinPrice * 0.95) * item.createBundle -

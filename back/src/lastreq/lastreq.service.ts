@@ -12,7 +12,6 @@ export class LastreqService {
 
   async findAll() {
     try {
-      console.log('qwr');
       let lastreq = await this.lastReqRepository.findOne({
         where: { id: 1 },
         select: ['lastReq'],
