@@ -31,23 +31,25 @@ export class DetailitemService {
       itemName: string;
       currentMinPrice: number;
       createCost: number;
-      enargy: number;
+      energy: number;
       createTime: number;
       createBundle: number;
       categoryId: number;
       marketBundle: number;
       icon: string;
+      itemCode: number;
     } = {
       id: listCreation.id,
       itemName: listCreation.name,
       currentMinPrice: listCreation.market.currentMinPrice,
       createCost: listCreation.createCost,
-      enargy: listCreation.energy,
+      energy: listCreation.energy,
       createTime: listCreation.createTime,
       createBundle: listCreation.createBundle,
       categoryId: listCreation.category.id,
       marketBundle: listCreation.market.bundle,
       icon: listCreation.icon.icon,
+      itemCode: listCreation.itemCode,
     };
 
     for (const calc of ingredientlist) {

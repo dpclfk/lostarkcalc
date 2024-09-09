@@ -32,8 +32,6 @@ export class RecipeService {
     let findicon = await this.iconRepository.findOne({
       where: { itemCode: createRecipeDto.itemCode },
     });
-    console.log('test1');
-    console.log(findicon);
     if (!findicon) {
       findicon = await this.iconRepository.findOne({
         where: {
@@ -80,11 +78,13 @@ export class RecipeService {
         const findmarket = await this.marketRepository.findOne({
           where: { name: ingredient.itemName },
         });
+
         const ingredientCreate = this.ingredientRepository.create({
           market: findmarket,
           creation: creation,
           ingredientCount: ingredient.ingredientCount,
         });
+
         await this.ingredientRepository.save(ingredientCreate);
       }
       //재료 추가 반복문 끝
@@ -92,8 +92,9 @@ export class RecipeService {
       console.log(error.message);
       if (error.message.includes('Duplicate')) {
         return { result: 'duplication Item' };
+      } else {
+        return `${creation.name} 추가중 알수없는 오류가 발생했습니다.`;
       }
-      return `${creation.name} 추가중 알수없는 오류가 발생했습니다.`;
     }
     return { itemId: creation.id };
   }

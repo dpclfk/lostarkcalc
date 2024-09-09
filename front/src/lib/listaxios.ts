@@ -6,7 +6,7 @@ export interface List {
   currentMinPrice: number;
   ingredientAllCost: number;
   createCost: number;
-  enargy: number;
+  energy: number;
   createBundle: number;
   categoryId: number;
   icon: string;
@@ -34,7 +34,6 @@ export const Lastreq = async (): Promise<string> => {
   try {
     const response = await serverbase.get(`/lastreq`);
     const date = new Date(response.data.lastReq).toString();
-    console.log(date);
     return date;
   } catch (error: any) {
     console.log(error.message);

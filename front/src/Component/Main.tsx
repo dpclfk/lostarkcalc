@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Lastreq } from "../lib/listaxios";
 import serverbase from "../lib/server";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export interface List {
   id: number;
@@ -10,7 +10,7 @@ export interface List {
   currentMinPrice: number;
   ingredientAllCost: number;
   createCost: number;
-  enargy: number;
+  energy: number;
   createBundle: number;
   categoryId: number;
   icon: string;
@@ -24,23 +24,36 @@ export interface CateList {
 const Main = (): JSX.Element => {
   const navigate = useNavigate();
 
-  const admin = false;
+  const admin = true;
+  const queryclient = useQueryClient();
 
   const [category, setCategory] = useState<number[]>([]);
   const [search, setSearch] = useState<string>("");
+  const [cate, setCate] = useState<CateList[]>([{ id: 0, categoryName: "관심" }]);
 
-  const cate: { id: number; categoryName: string }[] = [
-    { id: 0, categoryName: "관심" },
-    { id: 1, categoryName: "배틀아이템" },
-    { id: 2, categoryName: "요리" },
-    { id: 3, categoryName: "생활도구" },
-    { id: 4, categoryName: "특수" },
-  ];
+  // const cate: { id: number; categoryName: string }[] = [
+  //   { id: 0, categoryName: "관심" },
+  //   { id: 1, categoryName: "배틀아이템" },
+  //   { id: 2, categoryName: "요리" },
+  //   { id: 3, categoryName: "생활도구" },
+  //   { id: 4, categoryName: "특수" },
+  // ];
 
-  const queryclient = useQueryClient();
+  const catelist = useQuery({
+    queryKey: ["category"],
+    queryFn: async (): Promise<CateList[]> => {
+      try {
+        const catelist = await serverbase.get("/category");
+        return catelist.data;
+      } catch (error: any) {
+        console.log(error.message);
+        throw new Error("Failed to Get List");
+      }
+    },
+  });
 
   const list = useQuery({
-    queryKey: ["list"],
+    queryKey: ["list", search],
     queryFn: async (): Promise<List[]> => {
       try {
         const response = await serverbase.get(
@@ -64,8 +77,12 @@ const Main = (): JSX.Element => {
     queryclient.invalidateQueries({ queryKey: ["lastreq"] });
   }, [category, search, queryclient]);
 
+  useEffect(() => {
+    if (catelist.data) setCate([{ id: 0, categoryName: "관심" }, ...catelist.data]);
+  }, [catelist.data]);
+
   return (
-    <div className="m-auto w-11/12 min-w-[40rem]">
+    <div className="m-auto w-11/12 min-w-[60rem] max-w-[90rem]">
       <div className="mt-8 h-auto bg-white">
         <div className="mx-3">
           <div className="flex text-xl py-2 justify-between">
@@ -74,9 +91,13 @@ const Main = (): JSX.Element => {
               <button className="bg-layoutcolor text-white rounded px-2 py-1">영지효과</button>
             </div>
             {admin ? (
-              <button className="bg-admincolor text-white text-center rounded px-2 py-1">
+              <Link
+                to="admin"
+                className="bg-admincolor text-white text-center rounded px-2 py-1"
+                // onClick={() => <Link to="/admin"></Link>}
+              >
                 레시피 추가
-              </button>
+              </Link>
             ) : (
               ""
             )}
@@ -193,7 +214,7 @@ const Main = (): JSX.Element => {
                         item.ingredientAllCost / 100 -
                         item.createCost
                       ).toFixed(2) /
-                        item.enargy) *
+                        item.energy) *
                       100
                     ).toFixed(2)}
                     %

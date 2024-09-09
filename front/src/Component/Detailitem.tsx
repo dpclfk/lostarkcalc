@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import serverbase from "../lib/server";
 import { Lastreq } from "../lib/listaxios";
 import gold from "../gold.png";
+import { numberinput } from "../lib/inputnumber";
 
 export interface Detailitem {
   creation: {
@@ -11,12 +12,13 @@ export interface Detailitem {
     itemName: string;
     currentMinPrice: number;
     createCost: number;
-    enargy: number;
+    energy: number;
     createTime: number;
     createBundle: number;
     categoryId: number;
     marketBundle: number;
     icon: string;
+    itemCode: number;
   };
   ingredient: {
     id: number;
@@ -34,7 +36,7 @@ const Detail = (): JSX.Element => {
   const [price, setPrice] = useState<number[]>([1]); // 재료 아이템 시세
   const [createNumber, setCreateNumber] = useState<number>(1); // 제작 묶음 수량
   const [creationPrice, setCreationPrice] = useState<number>(0); // 제작하려는 아이템 시세
-  const [ingredientSum, setIngredientSum] = useState<number[]>([]); // 각 재료별 합계
+  const [ingredientSum, setIngredientSum] = useState<number[]>([1]); // 각 재료별 합계
   const [sumcreation, setSumcreation] = useState<number>(0); // 제작비용 총 합계(골드 포함)
   const [sellnumber, setSellnumber] = useState<number>(0); // 판매단위 기준으로 몇개 팔건지
   const [sellcharge, setSellcharge] = useState<number>(0); // 판매단위 당 수수료
@@ -43,7 +45,7 @@ const Detail = (): JSX.Element => {
 
   // 파람스 숫자아니면 메인페이지로 보냄
   useEffect(() => {
-    if (param.id && Number.isNaN(+param.id)) {
+    if (param.id === undefined || Number.isNaN(+param.id)) {
       navigate("/");
     }
   }, [param.id, navigate]);
@@ -51,15 +53,35 @@ const Detail = (): JSX.Element => {
   // 처음에 데이터 받아옴
   const { data } = useQuery({
     queryKey: ["detailitem"],
+
     queryFn: async (): Promise<Detailitem> => {
       try {
-        const response = await serverbase.get(`/detailitem/${param.id}`);
-        return response.data;
+        if (param.id === undefined || Number.isNaN(+param.id)) {
+          throw Error;
+        } else {
+          const response = await serverbase.get(`/detailitem/${param.id}`);
+          return response.data;
+        }
       } catch (error: any) {
         console.log(error.message);
         throw new Error("Failed to Get Detail Item");
       }
     },
+  });
+
+  const deleterecipe = useQuery({
+    queryKey: ["detailitem"],
+    queryFn: async (): Promise<string> => {
+      try {
+        const response = await serverbase.delete(`/recipe/${param.id}`);
+        return response.data;
+      } catch (error: any) {
+        console.log(error.message);
+        throw new Error("Failed to Get Delete Recipe");
+      }
+    },
+    enabled: false,
+    retry: 0,
   });
 
   // 데이터 값이 변경되면 즉, 데이터를 받아왔을때 기능함
@@ -69,7 +91,6 @@ const Detail = (): JSX.Element => {
       let pricearr: number[] = [1];
       for (const pricedata of data?.ingredient) {
         pricearr.push(pricedata.currentMinPrice);
-        // setPrice((state) => [...state, pricedata.currentMinPrice]);
         setIngredientSum((state) => [
           ...state,
           +((pricedata.currentMinPrice / pricedata.bundle) * pricedata.ingredientCount).toFixed(2),
@@ -103,14 +124,15 @@ const Detail = (): JSX.Element => {
   }, [ingredientSum]);
 
   useEffect(() => {
-    //판매단위 당 수수료
+    // 판매단위 당 수수료
     setSellcharge(creationPrice ? Math.ceil(creationPrice * 0.05) : 0);
-    //판매단위 당 원가
+    // 판매단위 당 원가
     setSellfirstcost(
       sumcreation && creationPrice
         ? +(sumcreation / data?.creation.createBundle!).toFixed(2) + Math.ceil(creationPrice * 0.05)
         : 0
     );
+    // 판매단위 당 판매차익
     setSellprofit(
       +(+(sumcreation && creationPrice && creationPrice
         ? creationPrice -
@@ -119,7 +141,6 @@ const Detail = (): JSX.Element => {
           Math.ceil(creationPrice * 0.05)
         : 0)).toFixed(2)
     );
-    console.log(creationPrice);
   }, [creationPrice, sumcreation, data]);
 
   // 최근 요청시간
@@ -130,10 +151,29 @@ const Detail = (): JSX.Element => {
 
   return (
     <>
-      <div className="m-auto w-11/12 min-w-[40rem]">
+      <div className="m-auto w-11/12 min-w-[60rem] max-w-[90rem]">
         {/* 상단 아이템 이름 및 추천정보 */}
         <div className="bg-white py-4 mt-4">
-          <div className="text-3xl font-bold">{data?.creation.itemName}</div>
+          <div className="text-3xl font-bold flex justify-center">
+            <div className="absolute">{data?.creation.itemName}</div>
+            <div className="w-full flex justify-end px-4 gap-4">
+              <button
+                className=" bg-admincolor font-normal text-white py-1 px-4 rounded-lg"
+                onClick={() => navigate(`/admin?id=${data?.creation.id}`)}
+              >
+                수정
+              </button>
+              <Link
+                to={"/"}
+                className=" bg-cancelcolor font-normal text-white py-1 px-4 rounded-lg"
+                onClick={() => {
+                  deleterecipe.refetch();
+                }}
+              >
+                삭제
+              </Link>
+            </div>
+          </div>
           <div className="flex text-footercolor rounded justify-around pb-4">{lastreq.data}</div>
           <div className="flex justify-around">
             <div className="w-24">
@@ -177,7 +217,7 @@ const Detail = (): JSX.Element => {
               </div>
               <div className="flex pb-4">
                 <div className="w-[50%] text-start">활동력</div>
-                <div className="font-bold w-[50%] text-end">{data?.creation.enargy}</div>
+                <div className="font-bold w-[50%] text-end">{data?.creation.energy}</div>
               </div>
               <div className="flex pb-4">
                 <div className="w-[50%] text-start">제작시간</div>
@@ -200,9 +240,8 @@ const Detail = (): JSX.Element => {
                 <div className="w-[50%] text-start">제작 묶음수량</div>
                 <input
                   className="font-bold w-[50%] text-end bg-inputcolor border-dashed border-b border-black"
-                  // defaultValue={createNumber}
                   value={createNumber}
-                  onChange={(e) => setCreateNumber(+e.target.value)}
+                  onChange={(e) => setCreateNumber(numberinput(e.target.value))}
                 ></input>
               </div>
               <div className="flex pb-4">
@@ -225,42 +264,23 @@ const Detail = (): JSX.Element => {
                 <div className="w-[50%] text-start">시세</div>
                 <input
                   className="font-bold w-[50%] text-end bg-inputcolor border-dashed border-b border-black"
-                  // defaultValue={creationPrice}
                   value={creationPrice}
-                  onChange={(e) => setCreationPrice(+e.target.value)}
+                  onChange={(e) => {
+                    setCreationPrice(numberinput(e.target.value));
+                  }}
                 ></input>
               </div>
               <div className="flex pb-4">
                 <div className="w-[50%] text-start">판매단위 당 수수료</div>
-                <div className="font-bold w-[50%] text-end">
-                  {/* {creationPrice ? Math.ceil(creationPrice * 0.05) : ""} */}
-                  {sellcharge}
-                </div>
+                <div className="font-bold w-[50%] text-end">{sellcharge}</div>
               </div>
               <div className="flex pb-4">
                 <div className="w-[50%] text-start">판매단위 당 원가</div>
-                <div className="font-bold w-[50%] text-end">
-                  {/* {sumcreation && creationPrice
-                    ? +(sumcreation / data?.creation.createBundle!).toFixed(2) +
-                      Math.ceil(creationPrice * 0.05)
-                    : ""} */}
-                  {sellfirstcost}
-                </div>
+                <div className="font-bold w-[50%] text-end">{sellfirstcost}</div>
               </div>
               <div className="flex pb-4">
                 <div className="w-[50%] text-start">판매단위 당 판매차익</div>
-                <div className="font-bold w-[50%] text-end">
-                  {/* {(
-                    creationPrice! -
-                    // 재료시세 / 제작 갯수 sumcreation이 undefined 일수도 있다고해서 조건문
-                    +(sumcreation && creationPrice
-                      ? +(sumcreation! / data?.creation.createBundle!).toFixed(2) +
-                        // 판매단위당 수수료
-                        Math.ceil(creationPrice * 0.05)
-                      : "")
-                  ).toFixed(2)} */}
-                  {sellprofit}
-                </div>
+                <div className="font-bold w-[50%] text-end">{sellprofit}</div>
               </div>
             </div>
             {/* 판매정보 상단 끝 하단 시작 */}
@@ -270,83 +290,36 @@ const Detail = (): JSX.Element => {
                 <input
                   className="font-bold w-[50%] text-end bg-inputcolor border-dashed border-b border-black"
                   value={sellnumber}
-                  type="number"
-                  onChange={(e) => setSellnumber(+e.target.value)}
+                  onChange={(e) => setSellnumber(numberinput(e.target.value))}
                 ></input>
               </div>
               <div className="flex pb-4">
                 <div className="w-[50%] text-start">총 수수료</div>
-                <div className="font-bold w-[50%] text-end">
-                  {/* {creationPrice && sellnumber ? Math.ceil(creationPrice * 0.05) * sellnumber : ""} */}
-                  {sellcharge * sellnumber}
-                </div>
+                <div className="font-bold w-[50%] text-end">{sellcharge * sellnumber}</div>
               </div>
               <div className="flex pb-4">
                 <div className="w-[50%] text-start">총 원가</div>
                 <div className="font-bold w-[50%] text-end">
-                  {/* {sumcreation && creationPrice && sellnumber
-                    ? (
-                        (+(sumcreation / data?.creation.createBundle!).toFixed(2) +
-                          Math.ceil(creationPrice * 0.05)) *
-                        sellnumber
-                      ).toFixed(2)
-                    : ""} */}
                   {(sellfirstcost * sellnumber).toFixed(2)}
                 </div>
               </div>
               <div className="flex pb-4">
                 <div className="w-[50%] text-start">총 판매차익</div>
                 <div className="font-bold w-[50%] text-end">
-                  {/* {sumcreation && creationPrice && sellnumber
-                    ? (
-                        (creationPrice -
-                          +(sumcreation / data?.creation.createBundle!).toFixed(2) -
-                          Math.ceil(creationPrice * 0.05)) *
-                        sellnumber
-                      ).toFixed(2)
-                    : ""} */}
                   {(sellprofit * sellnumber).toFixed(2)}
                 </div>
               </div>
               <div className="flex pb-4">
                 <div className="w-[50%] text-start">원가 대비 이익률</div>
                 <div className="font-bold w-[50%] text-end">
-                  {/* {sumcreation && creationPrice && sellnumber
-                    ? (
-                        (+(
-                          (creationPrice -
-                            +(sumcreation / data?.creation.createBundle!).toFixed(2) -
-                            Math.ceil(creationPrice * 0.05)) *
-                          sellnumber
-                        ).toFixed(2) /
-                          +(
-                            (+(sumcreation / data?.creation.createBundle!).toFixed(2) +
-                              Math.ceil(creationPrice * 0.05)) *
-                            sellnumber
-                          ).toFixed(2)) *
-                        100
-                      ).toFixed(2)
-                    : ""} */}
                   {((sellprofit / sellfirstcost) * 100).toFixed(2)}%
                 </div>
               </div>
               <div className="flex pb-4">
                 <div className="w-[50%] text-start">활동력 대비 이익률</div>
                 <div className="font-bold w-[50%] text-end">
-                  {/* {sumcreation && creationPrice && sellnumber
-                    ? (
-                        (+(
-                          (creationPrice -
-                            +(sumcreation / data?.creation.createBundle!).toFixed(2) -
-                            Math.ceil(creationPrice * 0.05)) *
-                          sellnumber
-                        ).toFixed(2) /
-                          data?.creation.enargy!) *
-                        100
-                      ).toFixed(2)
-                    : ""} */}
-                  {data?.creation.enargy
-                    ? ((sellprofit * sellnumber * 100) / data.creation.enargy).toFixed(2)
+                  {data?.creation.energy
+                    ? ((sellprofit * sellnumber * 100) / data.creation.energy).toFixed(2)
                     : ""}
                   %
                 </div>
@@ -384,13 +357,10 @@ const Detail = (): JSX.Element => {
                 <div>
                   <input
                     className="font-bold w-[100%] text-end bg-inputcolor border-dashed border-b border-black text-lg"
-                    // defaultValue={price[idx + 1]}
                     value={price[idx + 1] || ""}
-                    type="number"
                     onChange={(e) => {
                       setPrice((state) => {
-                        state[idx + 1] = +e.target.value;
-                        // price.with(idx + 1, +e.target.value)
+                        state[idx + 1] = numberinput(e.target.value);
                         return [...state];
                       });
                     }}
@@ -401,7 +371,6 @@ const Detail = (): JSX.Element => {
                 {price[idx + 1] / item.bundle || 1}
               </div>
               <div className="w-[15%] text-end py-2 font-bold text-lg leading-8">
-                {/* {((price[idx + 1] / item.bundle) * item.ingredientCount).toFixed(2)} */}
                 {ingredientSum[idx + 1] || 1}
               </div>
             </div>
@@ -420,13 +389,10 @@ const Detail = (): JSX.Element => {
               <div>
                 <input
                   className="font-bold w-[100%] text-end bg-inputcolor border-dashed border-b border-black text-lg"
-                  // defaultValue={price[0]}
                   value={price[0]}
-                  // onChange={(e) => setPrice(price.with(0, +e.target.value))}
                   onChange={(e) => {
                     setPrice((state) => {
-                      state[0] = +e.target.value;
-                      // price.with(idx + 1, +e.target.value)
+                      state[0] = numberinput(e.target.value);
                       return [...state];
                     });
                   }}
@@ -435,7 +401,7 @@ const Detail = (): JSX.Element => {
             </div>
             <div className="w-[15%] text-end py-2 font-bold text-lg leading-8">{price[0]}</div>
             <div className="w-[15%] text-end py-2 font-bold text-lg leading-8">
-              {ingredientSum[0] | 1}
+              {ingredientSum[0]}
             </div>
           </div>
           {/* 골드정보 div 끝 */}
