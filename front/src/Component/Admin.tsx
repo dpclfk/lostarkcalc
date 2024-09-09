@@ -149,20 +149,35 @@ const Admin = ({ test, mo }: tes): JSX.Element => {
               ingredientCount: ingredientInfo[i].number,
             });
           }
-          const recipe = await serverbase.post("/recipe", {
-            itemName: itemName,
-            itemCode: itemCode,
-            createBundle: createinfo[0],
-            energy: createinfo[1],
-            createTime: createinfo[2],
-            cost: cost,
-            category: cate[createinfo[3] - 1].categoryName,
-            icon: icon,
-            ingredient: ingredientarr,
-          });
-          console.log(recipe);
-          navigate(`/${recipe.data.itemId}`);
-          return recipe.data;
+          if (create) {
+            const recipe = await serverbase.post("/recipe", {
+              itemName: itemName,
+              itemCode: itemCode,
+              createBundle: createinfo[0],
+              energy: createinfo[1],
+              createTime: createinfo[2],
+              cost: cost,
+              category: cate[createinfo[3] - 1].categoryName,
+              icon: icon,
+              ingredient: ingredientarr,
+            });
+            navigate(`/${recipe.data.itemId}`);
+            return recipe.data;
+          } else {
+            const recipe = await serverbase.patch(`/recipe/${itemId}`, {
+              itemName: itemName,
+              itemCode: itemCode,
+              createBundle: createinfo[0],
+              energy: createinfo[1],
+              createTime: createinfo[2],
+              cost: cost,
+              category: cate[createinfo[3] - 1].categoryName,
+              icon: icon,
+              ingredient: ingredientarr,
+            });
+            navigate(`/${recipe.data.itemId}`);
+            return recipe.data;
+          }
         }
       } catch (error: any) {
         console.log(error.message);

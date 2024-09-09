@@ -91,11 +91,7 @@ const Main = (): JSX.Element => {
               <button className="bg-layoutcolor text-white rounded px-2 py-1">영지효과</button>
             </div>
             {admin ? (
-              <Link
-                to="admin"
-                className="bg-admincolor text-white text-center rounded px-2 py-1"
-                // onClick={() => <Link to="/admin"></Link>}
-              >
+              <Link to="admin" className="bg-admincolor text-white text-center rounded px-2 py-1">
                 레시피 추가
               </Link>
             ) : (

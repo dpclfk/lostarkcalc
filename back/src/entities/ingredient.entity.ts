@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Creation } from './creation.entity';
 import { Market } from './market.entity';
@@ -18,18 +19,20 @@ export class Ingredient {
   @Column({ unsigned: true, type: 'smallint' })
   ingredientCount: number;
 
-  @CreateDateColumn()
-  createdAt: Date;
+  // @CreateDateColumn()
+  // createdAt: Date;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  // @UpdateDateColumn()
+  // updatedAt: Date;
 
-  @DeleteDateColumn()
-  deletedAt: Date;
+  // @DeleteDateColumn()
+  // deletedAt: Date;
 
   @ManyToOne(() => Creation, (creation) => creation.ingredients, {})
+  @JoinColumn()
   creation: Creation;
 
   @ManyToOne(() => Market, (market) => market.ingredients, { eager: true })
+  @JoinColumn()
   market: Market;
 }

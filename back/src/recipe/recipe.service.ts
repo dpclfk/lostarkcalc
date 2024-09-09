@@ -60,7 +60,7 @@ export class RecipeService {
       });
     }
 
-    let creation = this.creationRepository.create({
+    const creation = this.creationRepository.create({
       name: createRecipeDto.itemName,
       itemCode: createRecipeDto.itemCode,
       createBundle: createRecipeDto.createBundle,
@@ -100,56 +100,60 @@ export class RecipeService {
   }
 
   async update(id: number, updateRecipeDto: UpdateRecipeDto) {
-    const findicategory = await this.categoryRepository.findOne({
-      where: { categoryName: updateRecipeDto.category },
-    });
+    try {
+      const findicategory = await this.categoryRepository.findOne({
+        where: { categoryName: updateRecipeDto.category },
+      });
 
-    let findicon = await this.iconRepository.findOne({
-      where: { itemCode: updateRecipeDto.itemCode },
-    });
-    if (!findicon) {
-      findicon = await this.iconRepository.findOne({
-        where: {
+      let findicon = await this.iconRepository.findOne({
+        where: { itemCode: updateRecipeDto.itemCode },
+      });
+      if (!findicon) {
+        findicon = await this.iconRepository.findOne({
+          where: {
+            icon: updateRecipeDto.icon.slice(
+              'https://cdn-lostark.game.onstove.com/efui_iconatlas/'.length,
+            ),
+          },
+        });
+      }
+      if (!findicon) {
+        findicon = this.iconRepository.create({
           icon: updateRecipeDto.icon.slice(
             'https://cdn-lostark.game.onstove.com/efui_iconatlas/'.length,
           ),
-        },
+          itemCode: updateRecipeDto.itemCode,
+        });
+        await this.iconRepository.save(findicon);
+      }
+
+      let findmarket = await this.marketRepository.findOne({
+        where: { itemCode: updateRecipeDto.itemCode },
       });
-    }
-    if (!findicon) {
-      findicon = this.iconRepository.create({
-        icon: updateRecipeDto.icon.slice(
-          'https://cdn-lostark.game.onstove.com/efui_iconatlas/'.length,
-        ),
+      if (!findmarket) {
+        findmarket = await this.marketRepository.findOne({
+          where: { itemCode: 1 },
+        });
+      }
+
+      const creation = this.creationRepository.create({
+        name: updateRecipeDto.itemName,
         itemCode: updateRecipeDto.itemCode,
+        createBundle: updateRecipeDto.createBundle,
+        energy: updateRecipeDto.energy,
+        createTime: updateRecipeDto.createTime,
+        createCost: updateRecipeDto.cost,
+        market: findmarket,
+        icon: findicon,
+        category: findicategory,
       });
-      await this.iconRepository.save(findicon);
-    }
-
-    let findmarket = await this.marketRepository.findOne({
-      where: { itemCode: updateRecipeDto.itemCode },
-    });
-    if (!findmarket) {
-      findmarket = await this.marketRepository.findOne({
-        where: { itemCode: 1 },
-      });
-    }
-
-    let creation = this.creationRepository.create({
-      name: updateRecipeDto.itemName,
-      itemCode: updateRecipeDto.itemCode,
-      createBundle: updateRecipeDto.createBundle,
-      energy: updateRecipeDto.energy,
-      createTime: updateRecipeDto.createTime,
-      createCost: updateRecipeDto.cost,
-      market: findmarket,
-      icon: findicon,
-      category: findicategory,
-    });
-    try {
       await this.creationRepository.update(id, creation);
 
       await this.ingredientRepository.delete({ creation: { id: id } });
+
+      const findcreation = await this.creationRepository.findOne({
+        where: { id: id },
+      });
 
       // 재료 추가 반복문
       for (const ingredient of updateRecipeDto.ingredient) {
@@ -158,7 +162,7 @@ export class RecipeService {
         });
         const ingredientCreate = this.ingredientRepository.create({
           market: findmarket,
-          creation: creation,
+          creation: findcreation,
           ingredientCount: ingredient.ingredientCount,
         });
         await this.ingredientRepository.save(ingredientCreate);
