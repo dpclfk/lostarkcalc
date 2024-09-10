@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   Res,
+  Session,
 } from '@nestjs/common';
 import { MarketService } from './market.service';
 import { CreateMarketDto } from './dto/create-market.dto';
@@ -19,8 +20,15 @@ export class MarketController {
   constructor(private readonly marketService: MarketService) {}
 
   @Post()
-  async create(@Body() createMarketDto: CreateMarketDto, @Res() res: Response) {
-    const marketcreate = await this.marketService.create(createMarketDto);
+  async create(
+    @Body() createMarketDto: CreateMarketDto,
+    @Res() res: Response,
+    @Session() session: Record<string, any>,
+  ) {
+    const marketcreate = await this.marketService.create(
+      createMarketDto,
+      session,
+    );
     if (marketcreate.statusCode) {
       res.status(marketcreate.statusCode).json({ result: marketcreate.result });
     } else {
@@ -44,8 +52,13 @@ export class MarketController {
     @Param('id') id: string,
     @Body() updateMarketDto: UpdateMarketDto,
     @Res() res: Response,
+    @Session() session: Record<string, any>,
   ) {
-    const marketpatch = await this.marketService.update(+id, updateMarketDto);
+    const marketpatch = await this.marketService.update(
+      +id,
+      updateMarketDto,
+      session,
+    );
 
     if (marketpatch.statusCode)
       res.status(marketpatch.statusCode).json({ result: marketpatch.result });
@@ -56,8 +69,12 @@ export class MarketController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @Res() res: Response) {
-    const marketdelete = await this.marketService.remove(+id);
+  async remove(
+    @Param('id') id: string,
+    @Res() res: Response,
+    @Session() session: Record<string, any>,
+  ) {
+    const marketdelete = await this.marketService.remove(+id, session);
 
     if (marketdelete.statusCode) {
       res.status(marketdelete.statusCode).json({ result: marketdelete.result });

@@ -66,7 +66,7 @@ export class BasicvalueService {
           where: { id: 1 },
         });
         if (marketfind) {
-          throw Error('already value');
+          throw Error('already basic value');
         }
         const lostlink = axios.create({
           baseURL: 'https://developer-lostark.game.onstove.com/',

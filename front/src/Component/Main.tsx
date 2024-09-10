@@ -21,10 +21,13 @@ export interface CateList {
   categoryName: string;
 }
 
-const Main = (): JSX.Element => {
+interface IProps {
+  admin: boolean;
+}
+
+const Main = ({ admin }: IProps): JSX.Element => {
   const navigate = useNavigate();
 
-  const admin = true;
   const queryclient = useQueryClient();
 
   const [category, setCategory] = useState<number[]>([]);

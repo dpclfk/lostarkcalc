@@ -8,24 +8,23 @@ import { Market } from 'src/entities/market.entity';
 import { Icon } from 'src/entities/icon.entity';
 import { Creation } from 'src/entities/creation.entity';
 import { Ingredient } from 'src/entities/ingredient.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MarketService {
   constructor(
-    @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
     @InjectRepository(Market)
     private marketRepository: Repository<Market>,
     @InjectRepository(Icon)
     private iconRepository: Repository<Icon>,
-    @InjectRepository(Creation)
-    private creationRepository: Repository<Creation>,
-    @InjectRepository(Ingredient)
-    private ingredientRepository: Repository<Ingredient>,
+    private configService: ConfigService,
   ) {}
 
-  async create(createMarketDto: CreateMarketDto) {
+  async create(createMarketDto: CreateMarketDto, session: any) {
     try {
+      if (session.user !== this.configService.get<string>(`ADMINNAME`)) {
+        throw Error('not admin');
+      }
       if (
         createMarketDto.icon.indexOf(
           'https://cdn-lostark.game.onstove.com/efui_iconatlas/',
@@ -67,6 +66,8 @@ export class MarketService {
         return { statusCode: 405, result: 'duplication Item' };
       } else if (error.message.includes('imgurl check')) {
         return { statusCode: 400, result: 'imgurl check' };
+      } else if (error.message.includes('not admin')) {
+        return { statusCode: 401, result: 'not admin' };
       }
       return { statusCode: 400, result: 'fail' };
     }
@@ -110,8 +111,11 @@ export class MarketService {
     }
   }
 
-  async update(id: number, updateMarketDto: UpdateMarketDto) {
+  async update(id: number, updateMarketDto: UpdateMarketDto, session: any) {
     try {
+      if (session.user !== this.configService.get<string>(`ADMINNAME`)) {
+        throw Error('not admin');
+      }
       const patchable = await this.marketRepository.findOne({
         where: { id: id },
       });
@@ -148,13 +152,18 @@ export class MarketService {
         return { statusCode: 405, result: 'duplication Item' };
       } else if (error.message.includes('not patch')) {
         return { statusCode: 400, result: 'not fatch' };
+      } else if (error.message.includes('not admin')) {
+        return { statusCode: 401, result: 'not admin' };
       }
       return { statusCode: 400, result: 'fail' };
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number, session: any) {
     try {
+      if (session.user !== this.configService.get<string>(`ADMINNAME`)) {
+        throw Error('not admin');
+      }
       const patchable = await this.marketRepository.findOne({
         where: { id: id },
       });
@@ -167,6 +176,8 @@ export class MarketService {
     } catch (error) {
       if (error.message.includes('not patch')) {
         return { statusCode: 400, result: 'not fatch' };
+      } else if (error.message.includes('not admin')) {
+        return { statusCode: 401, result: 'not admin' };
       }
       return { statusCode: 400, result: 'fail' };
     }

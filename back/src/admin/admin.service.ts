@@ -6,14 +6,14 @@ import { ConfigService } from '@nestjs/config';
 export class AdminService {
   constructor(private configService: ConfigService) {}
 
-  create(createAdminDto: CreateAdminDto, session: any) {
+  async create(createAdminDto: CreateAdminDto, session: any) {
     if (
       createAdminDto.password === this.configService.get<string>(`PAGEPASSWORD`)
     ) {
-      console.log('test');
+      session.user = this.configService.get<string>(`ADMINNAME`);
+      return { admin: true };
     } else {
-      console.log('nn');
+      return { statusCode: 401, admin: false };
     }
-    return 'This action adds a new admin';
   }
 }

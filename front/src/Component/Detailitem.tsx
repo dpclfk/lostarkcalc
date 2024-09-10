@@ -30,7 +30,11 @@ export interface Detailitem {
   }[];
 }
 
-const Detail = (): JSX.Element => {
+interface IProps {
+  admin: boolean;
+}
+
+const Detail = ({ admin }: IProps): JSX.Element => {
   const param = useParams();
   const navigate = useNavigate();
   const [price, setPrice] = useState<number[]>([1]); // 재료 아이템 시세

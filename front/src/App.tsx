@@ -9,10 +9,12 @@ import { useCallback, useEffect, useState } from "react";
 import CreateMarket from "./Component/Modal/CreateMarket";
 import ModalTitle from "./Component/Modal/ModalTitle";
 import PatchMarket from "./Component/Modal/PatchMarket";
+import AdminLogin from "./Component/Modal/AdminLogin";
 
 const App = (): JSX.Element => {
   const [modal, setModal] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
+  const [admin, setAdmin] = useState<boolean>(false);
 
   // const mot = useCallback(() => {
   //   console.log(mo);
@@ -29,17 +31,16 @@ const App = (): JSX.Element => {
     <>
       {modal ? (
         <div>
-          <div
-            className="fixed w-[50%] h-[80%] bg-white justify-center mx-[25%] top-[10%] z-30 min-w-[40rem] max-w-[60rem] overflow-scroll pb-4"
-            onClick={() => {}}
-          >
+          <div className="fixed w-[50%] h-[80%] bg-white justify-center mx-[25%] top-[10%] z-30 min-w-[40rem] max-w-[60rem] overflow-scroll pb-4">
             <ModalTitle title={title}></ModalTitle>
             {title === "재료 정보 추가" ? (
               <CreateMarket setModal={setModal}></CreateMarket>
             ) : title === "재료 정보 수정 및 삭제하기" ? (
               <PatchMarket setModal={setModal}></PatchMarket>
+            ) : title === "관리자 로그인" ? (
+              <AdminLogin setModal={setModal} setAdmin={setAdmin}></AdminLogin>
             ) : (
-              "ss"
+              ""
             )}
           </div>
           <div
@@ -52,16 +53,16 @@ const App = (): JSX.Element => {
       )}
 
       <div className={`App bg-bgcolor ${modal ? "overflow-hidden" : ""}`}>
-        <Layout></Layout>
+        <Layout admin={admin} setAdmin={setAdmin}></Layout>
         <Routes>
-          <Route path="/" element={<Main />} />
+          <Route path="/" element={<Main admin={admin} />} />
           <Route
             path="/admin"
-            element={<Admin setModal={setModal} setTitle={setTitle} modal={modal} />}
+            element={<Admin setModal={setModal} setTitle={setTitle} modal={modal} admin={admin} />}
           />
-          <Route path="/:id" element={<Detail />} />
+          <Route path="/:id" element={<Detail admin={admin} />} />
         </Routes>
-        <Footer></Footer>
+        <Footer setModal={setModal} setTitle={setTitle} modal={modal}></Footer>
       </div>
     </>
   );

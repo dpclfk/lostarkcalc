@@ -17,9 +17,10 @@ interface IProps {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
   setTitle: React.Dispatch<React.SetStateAction<string>>;
   modal: boolean;
+  admin: boolean;
 }
 
-const Admin = ({ setModal, setTitle, modal }: IProps): JSX.Element => {
+const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
   const [recipe, setRecipe] = useState<string>(""); // 최상단 아이템 이름 검색버튼
   const [recipeSearch, setRecipeSearch] = useState<boolean>(false); // 어떤버튼으로 검색했는지
   const [marketSearch, setMarketSearch] = useState<boolean>(false); // 어떤버튼으로 검색했는지
@@ -262,6 +263,12 @@ const Admin = ({ setModal, setTitle, modal }: IProps): JSX.Element => {
   useEffect(() => {
     if (ingredient.data?.length! < 1) setIngredientSearch(false);
   }, [ingredient.data]);
+
+  useEffect(() => {
+    if (!admin) {
+      navigate("/");
+    }
+  }, [admin]);
 
   return (
     <>
