@@ -25,6 +25,7 @@ export class RecipeService {
   ) {}
 
   async create(createRecipeDto: CreateRecipeDto) {
+    console.log(createRecipeDto);
     const findicategory = await this.categoryRepository.findOne({
       where: { categoryName: createRecipeDto.category },
     });

@@ -70,6 +70,7 @@ export class MarketapiMiddleware implements NestMiddleware {
               recentPrice: item.RecentPrice,
               yDayAvgPrice: item.YDayAvgPrice,
               icon: icon,
+              patchable: false,
             });
             await this.marketRepository.upsert(market, []);
           } catch (err) {}

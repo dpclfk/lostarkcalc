@@ -35,6 +35,9 @@ export class Market {
   @Column({ unsigned: true })
   yDayAvgPrice: number;
 
+  @Column({ default: true })
+  patchable: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 

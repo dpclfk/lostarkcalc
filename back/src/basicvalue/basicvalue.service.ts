@@ -62,6 +62,12 @@ export class BasicvalueService {
           lastReq: new Date(),
         });
 
+        const marketfind = await this.marketRepository.findOne({
+          where: { id: 1 },
+        });
+        if (marketfind) {
+          throw Error('already value');
+        }
         const lostlink = axios.create({
           baseURL: 'https://developer-lostark.game.onstove.com/',
           headers: {
@@ -100,6 +106,7 @@ export class BasicvalueService {
               recentPrice: item.RecentPrice,
               yDayAvgPrice: item.YDayAvgPrice,
               icon: icon,
+              patchable: false,
             });
             await this.marketRepository.upsert(market, []);
           } catch (err) {}
@@ -325,7 +332,6 @@ export class BasicvalueService {
         //재료 추가 반복문 끝
       } catch (err) {
         console.log(err.message);
-        console.log(creation.name, '추가중 오류');
       }
     }
 

@@ -4,8 +4,7 @@ import {
   IsNotEmpty,
   Min,
   IsArray,
-  IsObject,
-  ValidateNested,
+  ArrayNotEmpty,
 } from 'class-validator';
 
 export class CreateRecipeDto {
@@ -46,12 +45,12 @@ export class CreateRecipeDto {
   @IsNotEmpty()
   icon: string;
 
-  ingredient: [
-    {
-      itemName: string;
-      ingredientCount: number;
-    },
-  ];
+  @IsArray({ each: true })
+  @ArrayNotEmpty()
+  ingredient: {
+    itemName: string;
+    ingredientCount: number;
+  }[];
 
   // @ValidateNested({ each: true })
   // ingredient: [];

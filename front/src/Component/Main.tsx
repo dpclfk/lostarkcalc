@@ -30,6 +30,7 @@ const Main = (): JSX.Element => {
   const [category, setCategory] = useState<number[]>([]);
   const [search, setSearch] = useState<string>("");
   const [cate, setCate] = useState<CateList[]>([{ id: 0, categoryName: "관심" }]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // const cate: { id: number; categoryName: string }[] = [
   //   { id: 0, categoryName: "관심" },
@@ -80,6 +81,14 @@ const Main = (): JSX.Element => {
   useEffect(() => {
     if (catelist.data) setCate([{ id: 0, categoryName: "관심" }, ...catelist.data]);
   }, [catelist.data]);
+
+  useEffect(() => {
+    if (list.isLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [list.isLoading]);
 
   return (
     <div className="m-auto w-11/12 min-w-[60rem] max-w-[90rem]">
@@ -137,13 +146,13 @@ const Main = (): JSX.Element => {
               ))}
         </div>
       </div>
-      <div className="mt-8 h-auto bg-white">
+      <div className="mt-8 h-auto bg-white overflow-scroll">
         <div className="mx-3">
           <div className="text-footercolor flex">레시피 클릭시 이동</div>
-          <div className="overflow-hidden">
-            <div className="flex pt-3 pb-2 min-w-[60rem]">
-              <div className="w-10"></div>
-              <div className="flex-1 text-start">레시피</div>
+          <div className="">
+            <div className="flex pt-3 pb-2 min-w-[60rem] border-solid border-b-[1px] border-b-footercolor">
+              <div className="w-12"></div>
+              <div className="min-w-96 flex-1 text-start">레시피</div>
               <div className="w-32">시세</div>
               <div className="w-32">제작비용</div>
               <div className="w-32">판매차익</div>
@@ -152,21 +161,22 @@ const Main = (): JSX.Element => {
               <div className="w-20">직접사용</div>
               <div className="w-20">판매</div>
             </div>
+            {loading ? <div>로딩중</div> : ""}
             {list === undefined || list.data?.length === 0 ? (
-              <div className="border-solid border-t-[1px] border-t-footercolor leading-8 min-w-[60rem] py-4 text-footercolor">
+              <div className="border-solid border-b-[1px] border-b-footercolor leading-8 min-w-[60rem] py-4 text-footercolor">
                 no data
               </div>
             ) : (
               list.data?.map((item: List, idx: number) => (
                 <div
                   key={idx}
-                  className="flex border-solid border-t-[1px] border-t-footercolor leading-8 min-w-[60rem]"
+                  className="flex border-solid border-b-[1px] border-b-footercolor leading-8 min-w-[60rem]"
                   onClick={() => {
                     navigate(`${item.id}`);
                   }}
                 >
-                  <div className="w-8 py-4">별</div>
-                  <div className="flex-1 text-start flex gap-4">
+                  <div className="py-4 w-12">별</div>
+                  <div className="min-w-96 flex-1 text-start flex gap-4">
                     <img
                       className="w-16"
                       src={`https://cdn-lostark.game.onstove.com/efui_iconatlas/${item.icon}`}
@@ -240,7 +250,7 @@ const Main = (): JSX.Element => {
         </div>
       </div>
       <div className="bg-white">
-        <div className="border-solid border-t-[1px] border-t-footercolor leading-8 py-4 mx-3 flex">
+        <div className="leading-8 py-4 mx-3 flex">
           <div>테스트</div>
         </div>
       </div>

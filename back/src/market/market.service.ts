@@ -26,6 +26,17 @@ export class MarketService {
 
   async create(createMarketDto: CreateMarketDto) {
     try {
+      if (
+        createMarketDto.icon.indexOf(
+          'https://cdn-lostark.game.onstove.com/efui_iconatlas/',
+        ) !== 0 ||
+        createMarketDto.icon.slice(
+          'https://cdn-lostark.game.onstove.com/efui_iconatlas/'.length,
+        ) === ''
+      ) {
+        throw Error('imgurl check');
+      }
+
       let icon = this.iconRepository.create({
         icon: createMarketDto.icon.slice(
           'https://cdn-lostark.game.onstove.com/efui_iconatlas/'.length,
@@ -53,9 +64,11 @@ export class MarketService {
     } catch (error) {
       console.log(error.message);
       if (error.message.includes('Duplicate')) {
-        return { result: 'duplication Item' };
+        return { statusCode: 405, result: 'duplication Item' };
+      } else if (error.message.includes('imgurl check')) {
+        return { statusCode: 400, result: 'imgurl check' };
       }
-      return { result: 'fail' };
+      return { statusCode: 400, result: 'fail' };
     }
   }
 
@@ -71,25 +84,40 @@ export class MarketService {
       let marketList = [];
 
       for (const market of findmarket) {
-        const marketobj: { name: string; icon: string; itemCode: number } = {
+        const marketobj: {
+          id: number;
+          name: string;
+          icon: string;
+          itemCode: number;
+          patchable: boolean;
+        } = {
+          id: market.id,
           name: market.name,
           icon: market.icon.icon,
           itemCode: market.itemCode,
+          patchable: market.patchable,
         };
         marketList = [...marketList, marketobj];
       }
-      return marketList;
+      return { marketList };
     } catch (error) {
+      console.log(error.message);
       if (error.message === 'empty search') {
-        return { result: 'empty search' };
+        return { statusCode: 400, result: 'empty search' };
       } else {
-        return { result: 'fail' };
+        return { statusCode: 400, result: 'fail' };
       }
     }
   }
 
   async update(id: number, updateMarketDto: UpdateMarketDto) {
     try {
+      const patchable = await this.marketRepository.findOne({
+        where: { id: id },
+      });
+      if (!patchable.patchable) {
+        throw Error('not patch');
+      }
       let icon = this.iconRepository.create({
         icon: updateMarketDto.icon.slice(
           'https://cdn-lostark.game.onstove.com/efui_iconatlas/'.length,
@@ -117,18 +145,30 @@ export class MarketService {
     } catch (error) {
       console.log(error.message);
       if (error.message.includes('Duplicate')) {
-        return { result: 'duplication Item' };
+        return { statusCode: 405, result: 'duplication Item' };
+      } else if (error.message.includes('not patch')) {
+        return { statusCode: 400, result: 'not fatch' };
       }
-      return { result: 'fail' };
+      return { statusCode: 400, result: 'fail' };
     }
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     try {
+      const patchable = await this.marketRepository.findOne({
+        where: { id: id },
+      });
+      console.log(patchable);
+      if (!patchable.patchable) {
+        throw Error('not patch');
+      }
       this.marketRepository.delete({ id: id });
       return { result: 'ok' };
     } catch (error) {
-      return { result: 'fail' };
+      if (error.message.includes('not patch')) {
+        return { statusCode: 400, result: 'not fatch' };
+      }
+      return { statusCode: 400, result: 'fail' };
     }
   }
 }
