@@ -3,6 +3,7 @@ import { Lastreq } from "../lib/listaxios";
 import serverbase from "../lib/server";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { numberinput } from "../lib/inputnumber";
 
 export interface List {
   id: number;
@@ -36,6 +37,9 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
   const [search, setSearch] = useState<string>("");
   const [cate, setCate] = useState<CateList[]>([{ id: 0, categoryName: "관심" }]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [favorites, setFavorites] = useState<number[]>([]);
+  const [page] = useState<number>(10);
+  const [pageNumber, setPageNumber] = useState<number>(1);
 
   const catelist = useQuery({
     queryKey: ["category"],
@@ -51,11 +55,12 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
   });
 
   const list = useQuery({
-    queryKey: ["list", search],
+    queryKey: ["list"],
     queryFn: async (): Promise<List[]> => {
       try {
+        const temp = category.filter((value) => value !== 0);
         const response = await serverbase.get(
-          `/list?${category ? `category=${category}&` : ""}search=${search}`
+          `/list?${temp ? `category=${temp}&` : ""}search=${search}`
         );
         return response.data;
       } catch (error: any) {
@@ -71,11 +76,11 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
   });
 
   useEffect(() => {
-    console.log("ma");
+    console.log("ma12124");
 
     queryclient.invalidateQueries({ queryKey: ["list"] });
     queryclient.invalidateQueries({ queryKey: ["lastreq"] });
-  }, [category, search, queryclient]);
+  }, [category, queryclient]);
 
   useEffect(() => {
     console.log("ma");
@@ -92,6 +97,19 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
       setLoading(false);
     }
   }, [list.isLoading]);
+
+  useEffect(() => {
+    const localFavorites = window.localStorage.getItem("Favorites");
+    if (!localFavorites) {
+      window.localStorage.setItem("Favorites", JSON.stringify([]));
+    } else {
+      setFavorites(JSON.parse(localFavorites!));
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem("Favorites", JSON.stringify(favorites));
+  }, [favorites]);
 
   return (
     <div className="m-auto w-11/12 min-w-[60rem] max-w-[90rem] ">
@@ -135,23 +153,21 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
           </button>
         </div>
         <div className="flex">
-          {cate === undefined || cate?.length === 0
-            ? ""
-            : cate?.map((item, idx) => (
-                <div
-                  key={idx}
-                  className={`m-auto py-4 border-solid border-b-2 ${
-                    category.indexOf(item.id) === -1 ? "border-white" : "border-layoutcolor"
-                  }`}
-                  onClick={() => {
-                    category.indexOf(item.id) === -1
-                      ? setCategory([...category, item.id])
-                      : setCategory(category.filter((element) => element !== item.id));
-                  }}
-                >
-                  <div>{item.categoryName}</div>
-                </div>
-              ))}
+          {cate.map((item, idx) => (
+            <div
+              key={idx}
+              className={`m-auto py-4 border-solid border-b-2 ${
+                category.indexOf(item.id) === -1 ? "border-white" : "border-layoutcolor"
+              }`}
+              onClick={() => {
+                category.indexOf(item.id) === -1
+                  ? setCategory([...category, item.id])
+                  : setCategory(category.filter((element) => element !== item.id));
+              }}
+            >
+              <div>{item.categoryName}</div>
+            </div>
+          ))}
         </div>
       </div>
       <div className="mt-8 bg-white">
@@ -159,18 +175,20 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
           <div className="text-footercolor flex">레시피 클릭시 이동</div>
           <div className="">
             <div className="flex justify-between pt-3 pb-2 border-b-[1px] border-b-footercolor w-[88.5rem]">
-              <div className="flex">
-                <div className="w-12"></div>
-                <div className="w-96 text-start">레시피</div>
-              </div>
-              <div className="flex">
-                <div className="w-32">시세</div>
-                <div className="w-32">제작비용</div>
-                <div className="w-32">판매차익</div>
-                <div className="w-32">원가이익률</div>
-                <div className="w-32">활동력이익률</div>
-                <div className="w-20">직접사용</div>
-                <div className="w-20">판매</div>
+              <div className="w-12"></div>
+              <div className="flex justify-between w-full">
+                <div className="flex">
+                  <div className="w-96 text-start">레시피</div>
+                </div>
+                <div className="flex">
+                  <div className="w-32">시세</div>
+                  <div className="w-32">제작비용</div>
+                  <div className="w-32">판매차익</div>
+                  <div className="w-32">원가이익률</div>
+                  <div className="w-32">활동력이익률</div>
+                  <div className="w-20">직접사용</div>
+                  <div className="w-20">판매</div>
+                </div>
               </div>
             </div>
             {loading ? <div>로딩중</div> : ""}
@@ -179,70 +197,48 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                 no data
               </div>
             ) : (
-              list.data?.map((item: List, idx: number) => (
-                <div
-                  key={idx}
-                  className="flex border-solid border-b-[1px] border-b-footercolor leading-8 w-[88.5rem] justify-between"
-                  onClick={() => {
-                    navigate(`${item.id}`);
-                  }}
-                >
-                  <div className="flex">
-                    <div className="py-4 w-12">별</div>
-                    <div className="w-96 text-start flex gap-4">
-                      <img
-                        className="w-16"
-                        src={`https://cdn-lostark.game.onstove.com/efui_iconatlas/${item.icon}`}
-                        alt="recipe img"
-                      />
-                      <div className="py-4">{item.itemName}</div>
+              list.data?.map((item: List, idx: number) =>
+                (favorites.indexOf(item.id) !== -1 || category.indexOf(0) === -1) &&
+                idx < page * pageNumber - 1 &&
+                idx > page * (pageNumber - 1) - 1 ? (
+                  <div
+                    key={idx}
+                    className="flex border-solid border-b-[1px] border-b-footercolor leading-8 w-[88.5rem]"
+                  >
+                    <div
+                      className={`py-4 w-12 z-10 ${
+                        favorites.indexOf(item.id) === -1 ? "" : "text-cancelcolor"
+                      }`}
+                      onClick={() => {
+                        favorites.indexOf(item.id) === -1
+                          ? setFavorites([...favorites, item.id])
+                          : setFavorites(favorites.filter((element) => element !== item.id));
+                      }}
+                    >
+                      별
                     </div>
-                  </div>
-                  <div className="flex">
-                    {/* 시세 */}
-                    <div className="w-32 py-4">{item.currentMinPrice}</div>
-                    {/* 제작비용 */}
-                    <div className="w-32 py-4">
-                      {(item.ingredientAllCost +
-                        Math.floor(
-                          (item.createCost *
-                            (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
-                              ? 0
-                              : 100 - (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
-                            100
-                        ) *
-                          100) /
-                        100}
-                    </div>
-                    {/* 차익 */}
-                    <div className="w-32 py-4">
-                      {(
-                        Math.floor(item.currentMinPrice * 0.95) * item.createBundle -
-                        item.ingredientAllCost / 100 -
-                        Math.floor(
-                          (item.createCost *
-                            (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
-                              ? 0
-                              : 100 - (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
-                            100
-                        )
-                      ).toFixed(2)}
-                    </div>
-                    {/* 원가 이익률 */}
-                    <div className="w-32 py-4">
-                      {(
-                        (+(
-                          Math.floor(item.currentMinPrice * 0.95) * item.createBundle -
-                          item.ingredientAllCost / 100 -
-                          Math.floor(
-                            (item.createCost *
-                              (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
-                                ? 0
-                                : 100 - (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
-                              100
-                          )
-                        ).toFixed(2) /
-                          ((item.ingredientAllCost +
+                    <div
+                      className="flex justify-between w-full"
+                      onClick={() => {
+                        navigate(`${item.id}`);
+                      }}
+                    >
+                      <div className="flex">
+                        <div className="w-96 text-start flex gap-4">
+                          <img
+                            className="w-16"
+                            src={`https://cdn-lostark.game.onstove.com/efui_iconatlas/${item.icon}`}
+                            alt="recipe img"
+                          />
+                          <div className="py-4">{item.itemName}</div>
+                        </div>
+                      </div>
+                      <div className="flex">
+                        {/* 시세 */}
+                        <div className="w-32 py-4">{item.currentMinPrice}</div>
+                        {/* 제작비용 */}
+                        <div className="w-32 py-4">
+                          {(item.ingredientAllCost +
                             Math.floor(
                               (item.createCost *
                                 (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
@@ -251,89 +247,145 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                                 100
                             ) *
                               100) /
-                            100 +
-                            Math.ceil(item.currentMinPrice * 0.05) * item.createBundle)) *
-                        100
-                      ).toFixed(2)}
-                      %
-                    </div>
-                    {/* 활동력 이익률 */}
-                    <div className="w-32 py-4">
-                      {(
-                        (+(
-                          Math.floor(item.currentMinPrice * 0.95) * item.createBundle -
-                          item.ingredientAllCost / 100 -
-                          Math.floor(
-                            (item.createCost *
-                              (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
-                                ? 0
-                                : 100 - (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
-                              100
-                          )
-                        ).toFixed(2) /
-                          Math.floor(
-                            (item.energy *
-                              (100 - (groundEffect[item.categoryId + 10] + groundEffect[10]) < 0
-                                ? 0
-                                : 100 - (groundEffect[item.categoryId + 10] + groundEffect[10]))) /
-                              100
-                          ) <
-                        1
-                          ? 1
-                          : Math.floor(
-                              (item.energy *
-                                (100 - (groundEffect[item.categoryId + 10] + groundEffect[10]) < 0
+                            100}
+                        </div>
+                        {/* 차익 */}
+                        <div className="w-32 py-4">
+                          {(
+                            Math.floor(item.currentMinPrice * 0.95) * item.createBundle -
+                            item.ingredientAllCost / 100 -
+                            Math.floor(
+                              (item.createCost *
+                                (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
                                   ? 0
-                                  : 100 -
-                                    (groundEffect[item.categoryId + 10] + groundEffect[10]))) /
+                                  : 100 - (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
                                 100
-                            )) * 100
-                      ).toFixed(2)}
-                      %
-                    </div>
-                    {/* 직접사용시 이득 손해 판단 */}
-                    <div className="w-20 py-4">
-                      {item.currentMinPrice * 3 -
-                        (item.ingredientAllCost +
-                          Math.floor(
-                            (item.createCost *
-                              (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
-                                ? 0
-                                : 100 - (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
-                              100
-                          ) *
-                            100) /
-                          100 >
-                      0
-                        ? "이득"
-                        : "손해"}
-                    </div>
-                    {/* 제작후 판매시 이득 손해 판단 */}
-                    <div className="w-20 py-4">
-                      {+(
-                        Math.floor(item.currentMinPrice * 0.95) * item.createBundle -
-                        item.ingredientAllCost / 100 -
-                        Math.floor(
-                          (item.createCost *
-                            (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
-                              ? 0
-                              : 100 - (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
+                            )
+                          ).toFixed(2)}
+                        </div>
+                        {/* 원가 이익률 */}
+                        <div className="w-32 py-4">
+                          {(
+                            (+(
+                              Math.floor(item.currentMinPrice * 0.95) * item.createBundle -
+                              item.ingredientAllCost / 100 -
+                              Math.floor(
+                                (item.createCost *
+                                  (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
+                                    ? 0
+                                    : 100 -
+                                      (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
+                                  100
+                              )
+                            ).toFixed(2) /
+                              ((item.ingredientAllCost +
+                                Math.floor(
+                                  (item.createCost *
+                                    (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
+                                      ? 0
+                                      : 100 -
+                                        (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
+                                    100
+                                ) *
+                                  100) /
+                                100 +
+                                Math.ceil(item.currentMinPrice * 0.05) * item.createBundle)) *
                             100
-                        )
-                      ).toFixed(2) > 0
-                        ? "이득"
-                        : "손해"}
+                          ).toFixed(2)}
+                          %
+                        </div>
+                        {/* 활동력 이익률 */}
+                        <div className="w-32 py-4">
+                          {(
+                            (+(
+                              Math.floor(item.currentMinPrice * 0.95) * item.createBundle -
+                              item.ingredientAllCost / 100 -
+                              Math.floor(
+                                (item.createCost *
+                                  (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
+                                    ? 0
+                                    : 100 -
+                                      (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
+                                  100
+                              )
+                            ).toFixed(2) /
+                              Math.floor(
+                                (item.energy *
+                                  (100 - (groundEffect[item.categoryId + 10] + groundEffect[10]) < 0
+                                    ? 0
+                                    : 100 -
+                                      (groundEffect[item.categoryId + 10] + groundEffect[10]))) /
+                                  100
+                              ) <
+                            1
+                              ? 1
+                              : Math.floor(
+                                  (item.energy *
+                                    (100 - (groundEffect[item.categoryId + 10] + groundEffect[10]) <
+                                    0
+                                      ? 0
+                                      : 100 -
+                                        (groundEffect[item.categoryId + 10] + groundEffect[10]))) /
+                                    100
+                                )) * 100
+                          ).toFixed(2)}
+                          %
+                        </div>
+                        {/* 직접사용시 이득 손해 판단 */}
+                        <div className="w-20 py-4">
+                          {item.currentMinPrice * 3 -
+                            (item.ingredientAllCost +
+                              Math.floor(
+                                (item.createCost *
+                                  (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
+                                    ? 0
+                                    : 100 -
+                                      (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
+                                  100
+                              ) *
+                                100) /
+                              100 >
+                          0
+                            ? "이득"
+                            : "손해"}
+                        </div>
+                        {/* 제작후 판매시 이득 손해 판단 */}
+                        <div className="w-20 py-4">
+                          {+(
+                            Math.floor(item.currentMinPrice * 0.95) * item.createBundle -
+                            item.ingredientAllCost / 100 -
+                            Math.floor(
+                              (item.createCost *
+                                (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
+                                  ? 0
+                                  : 100 - (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
+                                100
+                            )
+                          ).toFixed(2) > 0
+                            ? "이득"
+                            : "손해"}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
+                ) : (
+                  ""
+                )
+              )
             )}
           </div>
         </div>
       </div>
       <div className="bg-white">
-        <div className="leading-8 py-4 mx-3 flex">
-          <div>테스트</div>
+        <div className="leading-8 py-4 mx-3 flex justify-end px-4 gap-4">
+          <div>한번에 보여줄 최대 개수</div>
+          <div>{page}개</div>
+          <div>현재 페이지</div>
+          <input
+            type="number"
+            value={pageNumber}
+            onChange={(e) => setPageNumber(numberinput(e.target.value))}
+          />
         </div>
       </div>
     </div>
