@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Session, Res } from '@nestjs/common';
+import { Controller, Post, Body, Session, Res, Get } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { Response } from 'express';
@@ -20,5 +20,11 @@ export class AdminController {
     else {
       res.json({ admin: admin.admin });
     }
+  }
+
+  @Get()
+  async findAll(@Session() session: Record<string, any>, @Res() res: Response) {
+    const admin = await this.adminService.findAll(session);
+    res.json({ admin: admin.admin });
   }
 }

@@ -79,6 +79,8 @@ const PatchMarket = ({ setModal }: IProps): JSX.Element => {
   });
 
   useEffect(() => {
+    console.log("pa");
+
     if (market.isLoading) {
       setLoading(true);
     } else {

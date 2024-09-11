@@ -20,6 +20,8 @@ export class MarketapiMiddleware implements NestMiddleware {
   ) {}
 
   async use(req: any, res: any, next: () => void) {
+    if (req.session.user === this.configService.get<string>(`ADMINNAME`)) {
+    }
     try {
       const lastreq = await this.lastReqRepository.findOne({
         where: { id: 1 },

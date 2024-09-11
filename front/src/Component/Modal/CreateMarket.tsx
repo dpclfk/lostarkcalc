@@ -22,7 +22,6 @@ const CreateMarket = ({ setModal }: IProps): JSX.Element => {
           itemCode: itemCode,
           icon: iconUrl,
         });
-        console.log(response);
         setModal(false);
         return response.data;
       } catch (error: any) {

@@ -40,6 +40,7 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
   const [ingredientInfo, setIngredientInfo] = useState<
     { name: string; number: number; icon: string }[]
   >([]); // 하위 재료 정보
+  const [detailCheck, setDetailCheck] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -54,7 +55,6 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
         setRecipeSearch(true);
         setMarketSearch(false);
         const response = await serverbase.get(`/list?search=${recipe}`);
-        console.log(response);
         return response.data;
       } catch (error: any) {
         console.log(error.message);
@@ -79,6 +79,7 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
     enabled: false,
     retry: 0,
   });
+
   const catelist = useQuery({
     queryKey: ["category"],
     queryFn: async (): Promise<CateList[]> => {
@@ -100,7 +101,6 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
         setRecipeSearch(false);
         setMarketSearch(true);
         const response = await serverbase.get(`/market?search=${recipe}`);
-        console.log(response.data);
         return response.data.marketList;
       } catch (error: any) {
         console.log(error.message);
@@ -120,7 +120,6 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
         setMarketSearch(false);
         setIngredientSearch(true);
         const response = await serverbase.get(`/market?search=${marketName}`);
-        console.log(response.data.marketList);
         return response.data.marketList;
       } catch (error: any) {
         console.log(error.message);
@@ -194,16 +193,28 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
   });
 
   useEffect(() => {
+    console.log("1");
     if (catelist.data) setCate([...catelist.data]);
   }, [catelist.data]);
 
   useEffect(() => {
-    if (itemId) {
-      detailitem.refetch();
-    }
-  }, [itemId]);
+    console.log("2");
+
+    setDetailCheck(true);
+  }, [setDetailCheck, itemId]);
 
   useEffect(() => {
+    console.log("3");
+
+    if (detailCheck) {
+      detailitem.refetch();
+      setDetailCheck(false);
+    }
+  }, [detailCheck, detailitem, setDetailCheck]);
+
+  useEffect(() => {
+    console.log("4");
+
     if (detailitem.data) {
       const iteminfo = detailitem.data.creation;
       const ingredientinfo = detailitem.data.ingredient;
@@ -247,6 +258,8 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
   }, [setSearchParams]);
 
   useEffect(() => {
+    console.log("5");
+
     if (nowid) {
       setItemId(+nowid);
     } else {
@@ -255,20 +268,28 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
   }, [nowid, statereset]);
 
   useEffect(() => {
+    console.log("6");
+
     if (list.data?.length! < 1) setRecipeSearch(false);
   }, [list.data]);
   useEffect(() => {
+    console.log("8");
+
     if (market.data?.length! < 1) setMarketSearch(false);
   }, [market.data]);
   useEffect(() => {
+    console.log("9");
+
     if (ingredient.data?.length! < 1) setIngredientSearch(false);
   }, [ingredient.data]);
 
   useEffect(() => {
+    console.log("7");
+
     if (!admin) {
       navigate("/");
     }
-  }, [admin]);
+  }, [admin, navigate]);
 
   return (
     <>

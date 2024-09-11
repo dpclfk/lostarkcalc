@@ -18,7 +18,6 @@ const AdminLogin = ({ setModal, setAdmin }: IProps): JSX.Element => {
         const response = await serverbase.post(`/admin`, {
           password: password,
         });
-        console.log(response);
         setAdmin(true);
         setErrormessage("");
         setModal(false);
