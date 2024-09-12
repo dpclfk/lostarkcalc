@@ -8,7 +8,6 @@ import * as FileStore from 'session-file-store';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const FileStoreSession = FileStore(session);
-
   app.enableCors({
     origin: 'http://localhost:3001',
     credentials: true,
@@ -41,7 +40,7 @@ async function bootstrap() {
       },
     }),
   );
-
+  app.setGlobalPrefix('api');
   await app.listen(3000);
 }
 bootstrap();
