@@ -20,9 +20,7 @@ export interface List {
 // ${category ? `?category=${category}` : ""}
 export const getList = async (): Promise<List[]> => {
   try {
-    console.log("test1");
     const response = await serverbase.get(`/list`);
-    console.log("test2");
     return response.data;
   } catch (error: any) {
     console.log(error.message);

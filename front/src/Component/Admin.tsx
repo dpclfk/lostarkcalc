@@ -193,19 +193,14 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
   });
 
   useEffect(() => {
-    console.log("1");
     if (catelist.data) setCate([...catelist.data]);
   }, [catelist.data]);
 
   useEffect(() => {
-    console.log("2");
-
     setDetailCheck(true);
   }, [setDetailCheck, itemId]);
 
   useEffect(() => {
-    console.log("3");
-
     if (detailCheck) {
       detailitem.refetch();
       setDetailCheck(false);
@@ -213,8 +208,6 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
   }, [detailCheck, detailitem, setDetailCheck]);
 
   useEffect(() => {
-    console.log("4");
-
     if (detailitem.data) {
       const iteminfo = detailitem.data.creation;
       const ingredientinfo = detailitem.data.ingredient;
@@ -258,8 +251,6 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
   }, [setSearchParams]);
 
   useEffect(() => {
-    console.log("5");
-
     if (nowid) {
       setItemId(+nowid);
     } else {
@@ -268,24 +259,16 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
   }, [nowid, statereset]);
 
   useEffect(() => {
-    console.log("6");
-
     if (list.data?.length! < 1) setRecipeSearch(false);
   }, [list.data]);
   useEffect(() => {
-    console.log("8");
-
     if (market.data?.length! < 1) setMarketSearch(false);
   }, [market.data]);
   useEffect(() => {
-    console.log("9");
-
     if (ingredient.data?.length! < 1) setIngredientSearch(false);
   }, [ingredient.data]);
 
   useEffect(() => {
-    console.log("7");
-
     if (!admin) {
       navigate("/");
     }

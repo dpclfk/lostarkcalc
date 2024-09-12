@@ -13,8 +13,6 @@ const GroundEffect = ({ setModal, setGround, setRecalc }: IProps): JSX.Element =
   ]);
 
   useEffect(() => {
-    console.log("gr");
-
     const localEffect = window.localStorage.getItem("groundEffect");
     if (!localEffect) {
       window.localStorage.setItem(

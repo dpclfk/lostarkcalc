@@ -10,8 +10,6 @@ export class CategoryController {
   async findAll(@Req() req: Request, @Res() res: Response) {
     const category = await this.categoryService.findAll();
 
-    console.log('hi');
-
     res.json(category);
   }
 }

@@ -1,0 +1,182 @@
+name: Deploy project
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test_node:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.EC2_KEY }}
+
+      - name: Ensute SSH directory exists
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: ADD SSH known hosts
+        run: ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: test node
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+          export NVM_DIR="$HOME/.nvm"
+          if [ -s "$NVM_DIR/nvm.sh" ]; then
+            . "$NVM_DIR/nvm.sh"
+          else
+            echo "nvm.sh not found"
+            exit 1
+          fi
+
+          nvm -v'
+
+  test_mysql:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.EC2_KEY }}
+
+      - name: Ensute SSH directory exists
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: ADD SSH known hosts
+        run: ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: check mysql
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+          sudo service mysql status'
+
+      - name: test mysql user
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+          mysql -u ${{ secrets.MYSQL_USER }} -p${{ secrets.MYSQL_PASSWORD }} -e "SHOW DATABASES;"'
+
+  depoly_front:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.EC2_KEY }}
+
+      - name: Ensute SSH directory exists
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: ADD SSH known hosts
+        run: ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Install Dependencies of Front
+        working-directory: ./front
+        run: npm i
+
+      - name: Build Front
+        working-directory: ./front
+        run: npm run build
+
+      - name: Delete map front
+        working-directory: ./front/build
+        run: rm -rf ./**/*/*.map
+
+      - name: Copy Files to EC2
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+            rm -rf /var/www/front
+            mkdir /var/www/front'
+          rsync -avz -e "ssh" ./front/build/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/front
+
+      - name: Restart Nginx
+        run: ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} 'sudo service nginx restart'
+
+  deploy_back:
+    runs-on: ubuntu-latest
+    needs:
+      - test_node
+      - test_mysql
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.EC2_KEY }}
+
+      - name: Ensure SSH directory exists
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: Add SSH known hosts
+        run: ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Install Dependencies of Back
+        working-directory: ./back
+        run: npm i
+
+      - name: server env
+        working-directory: ./back
+        run: ${{ secrets.SERVER_ENV }}
+
+      - name: Build Back
+        working-directory: ./back
+        run: npm run build
+
+      - name: Copy Files to EC2
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+            rm -rf /var/www/backend
+            mkdir /var/www/backend'
+          rsync -avz -e "ssh" ./back/dist/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/backend
+          rsync -avz -e "ssh" ./back/package.json ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/backend/package.json
+          rsync -avz -e "ssh" ./back/.env ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/backend/.env
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+            export NVM_DIR="$HOME/.nvm"
+            if [ -s "$NVM_DIR/nvm.sh" ]; then
+              . "$NVM_DIR/nvm.sh"
+            else 
+              echo "nvm.sh not found"
+              exit 1
+            fi
+
+            nvm use --lts
+            cd /var/www/backend
+            npm i --production'
+
+      - name: Start Server
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+            export NVM_DIR="$HOME/.nvm"
+            if [ -s "$NVM_DIR/nvm.sh" ]; then
+              . "$NVM_DIR/nvm.sh"
+            else 
+              echo "nvm.sh not found"
+              exit 1
+            fi
+
+            nvm use --lts
+            
+            npm install -g pm2
+            pm2 stop all
+            pm2 start /var/www/backend/src/server.js --name backend'

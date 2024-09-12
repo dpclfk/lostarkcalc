@@ -77,21 +77,15 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
   });
 
   useEffect(() => {
-    console.log("ma12124");
-
     queryclient.invalidateQueries({ queryKey: ["list"] });
     queryclient.invalidateQueries({ queryKey: ["lastreq"] });
   }, [category, queryclient]);
 
   useEffect(() => {
-    console.log("ma");
-
     if (catelist.data) setCate([{ id: 0, categoryName: "관심" }, ...catelist.data]);
   }, [catelist.data]);
 
   useEffect(() => {
-    console.log("ma");
-
     if (list.isLoading) {
       setLoading(true);
     } else {

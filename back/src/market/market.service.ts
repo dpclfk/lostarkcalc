@@ -164,7 +164,6 @@ export class MarketService {
       const patchable = await this.marketRepository.findOne({
         where: { id: id },
       });
-      console.log(patchable);
       if (!patchable.patchable) {
         throw Error('not patch');
       }

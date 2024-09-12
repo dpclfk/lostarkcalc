@@ -33,7 +33,6 @@ const App = (): JSX.Element => {
   });
 
   useEffect(() => {
-    console.log("app1123");
     const localEffect = window.localStorage.getItem("groundEffect");
     if (!localEffect) {
       window.localStorage.setItem(
@@ -47,8 +46,6 @@ const App = (): JSX.Element => {
   }, [setRecalc, recalc]);
 
   useEffect(() => {
-    console.log("app");
-
     if (ground) {
       setTitle("영지효과");
       setModal(true);
@@ -56,8 +53,6 @@ const App = (): JSX.Element => {
   }, [ground]);
 
   useEffect(() => {
-    console.log("app");
-
     if (admincheck.data?.admin) {
       setAdmin(true);
     }

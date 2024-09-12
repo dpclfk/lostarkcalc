@@ -53,8 +53,6 @@ const Detail = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
 
   // 파람스 숫자아니면 메인페이지로 보냄
   useEffect(() => {
-    console.log("de");
-
     if (param.id === undefined || Number.isNaN(+param.id)) {
       navigate("/");
     }
@@ -96,8 +94,6 @@ const Detail = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
 
   // 데이터 값이 변경되면 즉, 데이터를 받아왔을때 기능함
   useEffect(() => {
-    console.log("de");
-
     if (data !== undefined) {
       setIngredientSum([
         Math.floor(
@@ -150,8 +146,6 @@ const Detail = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
 
   // 재료시세 변동시(직접 변동하는경우) 합계값도 자동으로 바뀌게 설정
   useEffect(() => {
-    console.log("de");
-
     let temparr: number[] = [
       price[0] *
         Math.floor(
@@ -173,8 +167,6 @@ const Detail = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
 
   // 합계값이 변동시 제작정보의 제작비용 변경하게 함
   useEffect(() => {
-    console.log("de");
-
     let sum: number = 0;
     ingredientSum.forEach((num) => {
       sum += num;
@@ -183,8 +175,6 @@ const Detail = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
   }, [ingredientSum]);
 
   useEffect(() => {
-    console.log("de");
-
     // 판매단위 당 수수료
     setSellcharge(creationPrice ? Math.ceil(creationPrice * 0.05) : 0);
     // 판매단위 당 원가
