@@ -160,7 +160,7 @@ jobs:
               exit 1
             fi
 
-            nvm use --lts
+            nvm use --lts'
 
       - name: npm init
         run: |
