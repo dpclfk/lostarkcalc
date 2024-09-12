@@ -20,8 +20,7 @@ export class MarketapiMiddleware implements NestMiddleware {
   ) {}
 
   async use(req: any, res: any, next: () => void) {
-    if (req.session.user === this.configService.get<string>(`ADMINNAME`)) {
-    }
+    //api 받아올때 오류날경우(서버 점검등) 바로멈추고 넘어가게 함
     try {
       const lastreq = await this.lastReqRepository.findOne({
         where: { id: 1 },

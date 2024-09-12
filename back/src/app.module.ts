@@ -56,9 +56,8 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(MarketapiMiddleware).forRoutes('*');
   }
+
   constructor(private basicvalue: BasicvalueService) {
-    // this.basicvalue.basiccategory();
-    // this.basicvalue.basiccmarket();
     this.basicvalue.basiccreation();
   }
 }

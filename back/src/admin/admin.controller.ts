@@ -1,7 +1,7 @@
-import { Controller, Post, Body, Session, Res, Get } from '@nestjs/common';
+import { Controller, Post, Body, Session, Res, Get, Req } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 @Controller('admin')
 export class AdminController {
@@ -10,10 +10,10 @@ export class AdminController {
   @Post()
   async create(
     @Body() createAdminDto: CreateAdminDto,
-    @Session() session: Record<string, any>,
+    @Req() req: Request,
     @Res() res: Response,
   ) {
-    const admin = await this.adminService.create(createAdminDto, session);
+    const admin = await this.adminService.create(createAdminDto, req);
 
     if (admin.statusCode)
       res.status(admin.statusCode).json({ admin: admin.admin });
@@ -23,8 +23,10 @@ export class AdminController {
   }
 
   @Get()
-  async findAll(@Session() session: Record<string, any>, @Res() res: Response) {
-    const admin = await this.adminService.findAll(session);
-    res.json({ admin: admin.admin });
+  async findAll(@Res() res: Response, @Req() req: Request) {
+    const admin = await this.adminService.findAll(req.session.admin);
+
+    res.json(admin);
+    // res.send();
   }
 }

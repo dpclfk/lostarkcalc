@@ -1,15 +1,20 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, Req, Res } from '@nestjs/common';
 import { ListService } from './list.service';
+import { Request, Response } from 'express';
 
 @Controller('list')
 export class ListController {
   constructor(private readonly listService: ListService) {}
 
   @Get()
-  findAll(
+  async findAll(
     @Query('category') category: string,
     @Query('search') search: string,
+    @Res() res: Response,
+    @Req() req: Request,
   ) {
-    return this.listService.findAll(category, search);
+    const list = await this.listService.findAll(category, search);
+
+    res.json(list);
   }
 }

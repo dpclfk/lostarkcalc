@@ -1,10 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
+import * as FileStore from 'session-file-store';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const FileStoreSession = FileStore(session);
+
   app.enableCors({
     origin: 'http://localhost:3001',
     credentials: true,
@@ -18,14 +22,22 @@ async function bootstrap() {
       },
     }),
   );
+  app.use(cookieParser());
+
   app.use(
     session({
-      secret: 'my-secret',
+      secret: 'secret',
       resave: true,
-      name: 'admin',
       saveUninitialized: false,
+      name: 'admin',
+      store: new FileStoreSession({
+        reapInterval: 10,
+        path: './session',
+        retries: 0,
+      }),
       cookie: {
-        maxAge: 10 * 1000,
+        maxAge: 1000 * 5,
+        path: '/',
       },
     }),
   );

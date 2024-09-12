@@ -2,12 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { CreateMarketDto } from './dto/create-market.dto';
 import { UpdateMarketDto } from './dto/update-market.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Category } from 'src/entities/category.entity';
 import { Like, Repository } from 'typeorm';
 import { Market } from 'src/entities/market.entity';
 import { Icon } from 'src/entities/icon.entity';
-import { Creation } from 'src/entities/creation.entity';
-import { Ingredient } from 'src/entities/ingredient.entity';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
