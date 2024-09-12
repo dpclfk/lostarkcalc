@@ -164,11 +164,10 @@ jobs:
 
       - name: npm init
         run: |
-        ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
-          nvm use --lts
-          cd /var/www/backend
-          npm i --omit=dev'
-
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+            nvm use --lts
+            cd /var/www/backend
+            npm i --omit=dev'
 
       - name: Start Server
         run: |
