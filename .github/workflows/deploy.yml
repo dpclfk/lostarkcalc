@@ -169,7 +169,7 @@ jobs:
 
             nvm use --lts
             cd /var/www/backend
-            npm i'
+            npm i --omit=dev'
 
       - name: Start Server
         run: |
@@ -187,4 +187,3 @@ jobs:
             npm install -g pm2
             pm2 stop all
             pm2 start /var/www/backend/dist/main.js --name backend'
-            npm run start:prod
