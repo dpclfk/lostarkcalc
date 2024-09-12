@@ -31,12 +31,12 @@ async function bootstrap() {
       saveUninitialized: false,
       name: 'admin',
       store: new FileStoreSession({
-        reapInterval: 10,
+        reapInterval: 60,
         path: './session',
         retries: 0,
       }),
       cookie: {
-        maxAge: 1000 * 5,
+        maxAge: 1000 * 60 * 60,
         path: '/',
       },
     }),

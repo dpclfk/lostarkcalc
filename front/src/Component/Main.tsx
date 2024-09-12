@@ -40,6 +40,7 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
   const [favorites, setFavorites] = useState<number[]>([]);
   const [page] = useState<number>(10);
   const [pageNumber, setPageNumber] = useState<number>(1);
+  const [maxPageNumber, setMaxPageNumber] = useState<number>(1);
 
   const catelist = useQuery({
     queryKey: ["category"],
@@ -111,6 +112,10 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
     window.localStorage.setItem("Favorites", JSON.stringify(favorites));
   }, [favorites]);
 
+  useEffect(() => {
+    setMaxPageNumber(Math.ceil((list.data?.length! < 1 ? 1 : list.data?.length!) / page));
+  }, [list.data, page]);
+
   return (
     <div className="m-auto w-11/12 min-w-[60rem] max-w-[90rem] ">
       <div className="mt-8 h-auto bg-white ">
@@ -173,7 +178,7 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
       <div className="mt-8 bg-white">
         <div className="mx-3 overflow-scroll">
           <div className="text-footercolor flex">레시피 클릭시 이동</div>
-          <div className="">
+          <div className="min-h-20">
             <div className="flex justify-between pt-3 pb-2 border-b-[1px] border-b-footercolor w-[88.5rem]">
               <div className="w-12"></div>
               <div className="flex justify-between w-full">
@@ -192,14 +197,16 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
               </div>
             </div>
             {loading ? <div>로딩중</div> : ""}
-            {list === undefined || list.data?.length === 0 ? (
+            {list === undefined ||
+            list.data?.length === 0 ||
+            (favorites.length === 0 && category.indexOf(0) !== -1) ? (
               <div className="border-b-[1px] border-b-footercolor leading-8 py-4 text-footercolor">
                 no data
               </div>
             ) : (
               list.data?.map((item: List, idx: number) =>
                 (favorites.indexOf(item.id) !== -1 || category.indexOf(0) === -1) &&
-                idx < page * pageNumber - 1 &&
+                idx < page * pageNumber &&
                 idx > page * (pageNumber - 1) - 1 ? (
                   <div
                     key={idx}
@@ -382,10 +389,21 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
           <div>{page}개</div>
           <div>현재 페이지</div>
           <input
+            className="w-12 border border-footercolor rounded pl-2"
             type="number"
             value={pageNumber}
-            onChange={(e) => setPageNumber(numberinput(e.target.value))}
+            onChange={(e) =>
+              setPageNumber(
+                numberinput(e.target.value) > maxPageNumber
+                  ? maxPageNumber
+                  : numberinput(e.target.value) === 0
+                  ? 1
+                  : numberinput(e.target.value)
+              )
+            }
           />
+          <div>최대 페이지</div>
+          <div>{maxPageNumber}</div>
         </div>
       </div>
     </div>
