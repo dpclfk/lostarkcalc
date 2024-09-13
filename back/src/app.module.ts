@@ -26,7 +26,7 @@ import { AdminModule } from './admin/admin.module';
     ListModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `../.env`,
+      envFilePath: `.env`,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
