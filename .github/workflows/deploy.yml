@@ -166,7 +166,7 @@ jobs:
 
             nvm use --lts
             cd /var/www/backend
-            npm i --omit=dev'
+            npm i --production'
 
       - name: Start Server
         run: |
