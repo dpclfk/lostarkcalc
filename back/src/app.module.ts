@@ -25,6 +25,7 @@ import { AdminModule } from './admin/admin.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: `/var/www/backend/.env`,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
