@@ -23,10 +23,8 @@ import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
-    ListModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.env`,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -41,6 +39,7 @@ import { AdminModule } from './admin/admin.module';
       LastRequest,
       Market,
     ]),
+    ListModule,
     BasicvalueModule,
     DetailitemModule,
     RecipeModule,
