@@ -12,12 +12,6 @@ export interface List {
   icon: string;
 }
 
-// export interface Lastreq {
-//   lastReq: string;
-// }
-
-// category?: number[], search?: string
-// ${category ? `?category=${category}` : ""}
 export const getList = async (): Promise<List[]> => {
   try {
     const response = await serverbase.get(`/list`);

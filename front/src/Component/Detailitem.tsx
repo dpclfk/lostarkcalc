@@ -185,7 +185,7 @@ const Detail = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
     );
     // 판매단위 당 판매차익
     setSellprofit(
-      +(+(sumcreation && creationPrice && creationPrice
+      +(+(sumcreation && creationPrice && creationPrice > 0
         ? creationPrice -
           +(sumcreation! / data?.creation.createBundle!).toFixed(2) +
           // 판매단위당 수수료

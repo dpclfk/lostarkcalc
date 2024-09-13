@@ -20,12 +20,13 @@ import { CategoryModule } from './category/category.module';
 import { MarketModule } from './market/market.module';
 import { LastreqModule } from './lastreq/lastreq.module';
 import { AdminModule } from './admin/admin.module';
+import path from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `/var/www/backend/.env`,
+      envFilePath: `${__dirname}/../.env`,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

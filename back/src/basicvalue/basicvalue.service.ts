@@ -289,14 +289,35 @@ export class BasicvalueService {
     }
   }
 
+  // 거래소에 없는 아이템 아이콘 만들기 현재는 달인 낚시도구만
+  async basicicon() {
+    const noitem: string =
+      'https://cdn-lostark.game.onstove.com/efui_iconatlas/lifelevel/lifelevel_01_136.png';
+    const noitemcode: number = 6811605;
+    let icon = this.iconRepository.create({
+      icon: noitem.slice(
+        'https://cdn-lostark.game.onstove.com/efui_iconatlas/'.length,
+      ),
+      itemCode: noitemcode,
+    });
+    await this.iconRepository.save(icon);
+  }
+
   async basiccreation() {
     await this.basiccategory();
     await this.basiccmarket();
+    await this.basicicon();
+
     // 여기부터 creationarr로 반복문
     for (const creationOBJ of creationarr) {
-      const findmarket = await this.marketRepository.findOne({
+      let findmarket = await this.marketRepository.findOne({
         where: { itemCode: creationOBJ.itemCode },
       });
+      if (!findmarket) {
+        findmarket = await this.marketRepository.findOne({
+          where: { itemCode: 1 },
+        });
+      }
       const findicon = await this.iconRepository.findOne({
         where: { itemCode: creationOBJ.itemCode },
       });
