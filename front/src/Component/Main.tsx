@@ -13,6 +13,7 @@ export interface List {
   createCost: number;
   energy: number;
   createBundle: number;
+  marketBundle: number;
   categoryId: number;
   icon: string;
 }
@@ -107,7 +108,10 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
   }, [favorites]);
 
   useEffect(() => {
-    setMaxPageNumber(Math.ceil((list.data?.length! < 1 ? 1 : list.data?.length!) / page));
+    if (list.data) {
+      setMaxPageNumber(Math.ceil((list.data?.length! < 1 ? 1 : list.data?.length!) / page));
+    } else {
+    }
   }, [list.data, page]);
 
   return (
@@ -153,9 +157,9 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
         </div>
         <div className="flex">
           {cate.map((item, idx) => (
-            <div
+            <button
               key={idx}
-              className={`m-auto py-4 border-solid border-b-2 ${
+              className={`m-auto py-4 border-solid border-b-2 w-full ${
                 category.indexOf(item.id) === -1 ? "border-white" : "border-layoutcolor"
               }`}
               onClick={() => {
@@ -165,12 +169,12 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
               }}
             >
               <div>{item.categoryName}</div>
-            </div>
+            </button>
           ))}
         </div>
       </div>
       <div className="mt-8 bg-white">
-        <div className="mx-3 overflow-scroll">
+        <div className="mx-3 overflow-auto pt-4">
           <div className="text-footercolor flex">레시피 클릭시 이동</div>
           <div className="min-h-20">
             <div className="flex justify-between pt-3 pb-2 border-b-[1px] border-b-footercolor w-[88.5rem]">
@@ -206,7 +210,7 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                     key={idx}
                     className="flex border-solid border-b-[1px] border-b-footercolor leading-8 w-[88.5rem]"
                   >
-                    <div
+                    <button
                       className={`py-4 w-12 z-10 ${
                         favorites.indexOf(item.id) === -1 ? "" : "text-cancelcolor"
                       }`}
@@ -217,9 +221,9 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                       }}
                     >
                       별
-                    </div>
+                    </button>
                     <div
-                      className="flex justify-between w-full"
+                      className="flex justify-between w-full hover:bg-footercolor"
                       onClick={() => {
                         navigate(`${item.id}`);
                       }}
@@ -250,34 +254,52 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                               100) /
                             100}
                         </div>
-                        {/* 차익 */}
+                        {/* 판매차익 */}
                         <div className="w-32 py-4">
                           {(
-                            Math.floor(item.currentMinPrice * 0.95) * item.createBundle -
-                            item.ingredientAllCost / 100 -
-                            Math.floor(
-                              (item.createCost *
-                                (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
-                                  ? 0
-                                  : 100 - (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
+                            (+(
+                              Math.floor(item.currentMinPrice * 0.95) -
+                              ((item.ingredientAllCost +
+                                Math.floor(
+                                  (item.createCost *
+                                    (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
+                                      ? 0
+                                      : 100 -
+                                        (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
+                                    100
+                                ) *
+                                  100) *
+                                item.marketBundle) /
+                                item.createBundle /
                                 100
-                            )
+                            ).toFixed(2) *
+                              item.createBundle) /
+                            item.marketBundle
                           ).toFixed(2)}
                         </div>
                         {/* 원가 이익률 */}
                         <div className="w-32 py-4">
                           {(
                             (+(
-                              Math.floor(item.currentMinPrice * 0.95) * item.createBundle -
-                              item.ingredientAllCost / 100 -
-                              Math.floor(
-                                (item.createCost *
-                                  (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
-                                    ? 0
-                                    : 100 -
-                                      (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
+                              (+(
+                                Math.floor(item.currentMinPrice * 0.95) -
+                                ((item.ingredientAllCost +
+                                  Math.floor(
+                                    (item.createCost *
+                                      (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) <
+                                      0
+                                        ? 0
+                                        : 100 -
+                                          (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
+                                      100
+                                  ) *
+                                    100) *
+                                  item.marketBundle) /
+                                  item.createBundle /
                                   100
-                              )
+                              ).toFixed(2) *
+                                item.createBundle) /
+                              item.marketBundle
                             ).toFixed(2) /
                               ((item.ingredientAllCost +
                                 Math.floor(
@@ -290,7 +312,8 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                                 ) *
                                   100) /
                                 100 +
-                                Math.ceil(item.currentMinPrice * 0.05) * item.createBundle)) *
+                                (Math.ceil(item.currentMinPrice * 0.05) * item.createBundle) /
+                                  item.marketBundle)) *
                             100
                           ).toFixed(2)}
                           %
@@ -299,42 +322,34 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                         <div className="w-32 py-4">
                           {(
                             (+(
-                              Math.floor(item.currentMinPrice * 0.95) * item.createBundle -
-                              item.ingredientAllCost / 100 -
-                              Math.floor(
-                                (item.createCost *
-                                  (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
-                                    ? 0
-                                    : 100 -
-                                      (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
+                              (+(
+                                Math.floor(item.currentMinPrice * 0.95) -
+                                ((item.ingredientAllCost +
+                                  Math.floor(
+                                    (item.createCost *
+                                      (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) <
+                                      0
+                                        ? 0
+                                        : 100 -
+                                          (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
+                                      100
+                                  ) *
+                                    100) *
+                                  item.marketBundle) /
+                                  item.createBundle /
                                   100
-                              )
-                            ).toFixed(2) /
-                              Math.floor(
-                                (item.energy *
-                                  (100 - (groundEffect[item.categoryId + 10] + groundEffect[10]) < 0
-                                    ? 0
-                                    : 100 -
-                                      (groundEffect[item.categoryId + 10] + groundEffect[10]))) /
-                                  100
-                              ) <
-                            1
-                              ? 1
-                              : Math.floor(
-                                  (item.energy *
-                                    (100 - (groundEffect[item.categoryId + 10] + groundEffect[10]) <
-                                    0
-                                      ? 0
-                                      : 100 -
-                                        (groundEffect[item.categoryId + 10] + groundEffect[10]))) /
-                                    100
-                                )) * 100
+                              ).toFixed(2) *
+                                item.createBundle) /
+                              item.marketBundle
+                            ).toFixed(2) *
+                              100) /
+                            item.energy
                           ).toFixed(2)}
                           %
                         </div>
                         {/* 직접사용시 이득 손해 판단 */}
                         <div className="w-20 py-4">
-                          {item.currentMinPrice * 3 -
+                          {(item.currentMinPrice * item.createBundle) / item.marketBundle -
                             (item.ingredientAllCost +
                               Math.floor(
                                 (item.createCost *
@@ -353,15 +368,24 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                         {/* 제작후 판매시 이득 손해 판단 */}
                         <div className="w-20 py-4">
                           {+(
-                            Math.floor(item.currentMinPrice * 0.95) * item.createBundle -
-                            item.ingredientAllCost / 100 -
-                            Math.floor(
-                              (item.createCost *
-                                (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
-                                  ? 0
-                                  : 100 - (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
+                            (+(
+                              Math.floor(item.currentMinPrice * 0.95) -
+                              ((item.ingredientAllCost +
+                                Math.floor(
+                                  (item.createCost *
+                                    (100 - (groundEffect[item.categoryId + 5] + groundEffect[5]) < 0
+                                      ? 0
+                                      : 100 -
+                                        (groundEffect[item.categoryId + 5] + groundEffect[5]))) /
+                                    100
+                                ) *
+                                  100) *
+                                item.marketBundle) /
+                                item.createBundle /
                                 100
-                            )
+                            ).toFixed(2) *
+                              item.createBundle) /
+                            item.marketBundle
                           ).toFixed(2) > 0
                             ? "이득"
                             : "손해"}

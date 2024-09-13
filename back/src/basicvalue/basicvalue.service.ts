@@ -300,7 +300,9 @@ export class BasicvalueService {
       ),
       itemCode: noitemcode,
     });
-    await this.iconRepository.save(icon);
+    try {
+      await this.iconRepository.save(icon);
+    } catch (err) {}
   }
 
   async basiccreation() {

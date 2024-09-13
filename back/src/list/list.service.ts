@@ -49,6 +49,7 @@ export class ListService {
             createCost: listCreation[i].createCost,
             energy: listCreation[i].energy,
             createBundle: listCreation[i].createBundle,
+            marketBundle: listCreation[i].market.bundle,
             categoryId: listCreation[i].category.id,
             icon: listCreation[i].icon.icon,
           },

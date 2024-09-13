@@ -328,16 +328,18 @@ const GroundEffect = ({ setModal, setGround, setRecalc }: IProps): JSX.Element =
           </div>
         </div>
       </div>
-      <div className="border-t-[1px] border-footercolor flex justify-end px-12 py-8 gap-12 text-xl font-bold">
-        <div
+      <div className="border-t-[1px] border-footercolor flex justify-end px-8 py-8 text-xl font-bold">
+        <button
+          className="hover:bg-footercolor px-4 py-1"
           onClick={() => {
             setModal(false);
             setGround(false);
           }}
         >
           취소
-        </div>
-        <div
+        </button>
+        <button
+          className="hover:bg-footercolor px-4 py-1"
           onClick={() => {
             setModal(false);
             setGround(false);
@@ -346,7 +348,7 @@ const GroundEffect = ({ setModal, setGround, setRecalc }: IProps): JSX.Element =
           }}
         >
           수정
-        </div>
+        </button>
       </div>
     </>
   );

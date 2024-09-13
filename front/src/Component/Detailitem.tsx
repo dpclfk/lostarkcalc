@@ -180,17 +180,26 @@ const Detail = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
     // 판매단위 당 원가
     setSellfirstcost(
       sumcreation && creationPrice
-        ? +(sumcreation / data?.creation.createBundle!).toFixed(2) + Math.ceil(creationPrice * 0.05)
+        ? +(
+            +((sumcreation * data?.creation.marketBundle!) / data?.creation.createBundle!).toFixed(
+              2
+            ) + Math.ceil(creationPrice * 0.05)
+          ).toFixed(2)
         : 0
     );
-    // 판매단위 당 판매차익
+
     setSellprofit(
-      +(+(sumcreation && creationPrice && creationPrice > 0
-        ? creationPrice -
-          +(sumcreation! / data?.creation.createBundle!).toFixed(2) +
-          // 판매단위당 수수료
-          Math.ceil(creationPrice * 0.05)
-        : 0)).toFixed(2)
+      +(
+        creationPrice -
+        (sumcreation && creationPrice
+          ? +(
+              +(
+                (sumcreation * data?.creation.marketBundle!) /
+                data?.creation.createBundle!
+              ).toFixed(2) + Math.ceil(creationPrice * 0.05)
+            ).toFixed(2)
+          : 0)
+      ).toFixed(2)
     );
   }, [creationPrice, sumcreation, data]);
 
@@ -286,7 +295,10 @@ const Detail = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
               <div className="flex pb-4">
                 <div className="w-[50%] text-start">판매단위 당 제작비용</div>
                 <div className="font-bold w-[50%] text-end">
-                  {(sumcreation / data?.creation.createBundle!).toFixed(2)}
+                  {(
+                    (sumcreation * data?.creation.marketBundle!) /
+                    data?.creation.createBundle!
+                  ).toFixed(2)}
                 </div>
               </div>
               <div className="flex pb-4">
@@ -372,7 +384,7 @@ const Detail = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
               <div className="flex pb-4">
                 <div className="w-[50%] text-start">원가 대비 이익률</div>
                 <div className="font-bold w-[50%] text-end">
-                  {((sellprofit / sellfirstcost) * 100).toFixed(2)}%
+                  {((sellprofit / (sellfirstcost === 0 ? 1 : sellfirstcost)) * 100).toFixed(2)}%
                 </div>
               </div>
               <div className="flex pb-4">
@@ -424,9 +436,11 @@ const Detail = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                   ></input>
                 </div>
               </div>
+              {/* 단가 */}
               <div className="w-[15%] text-end py-2 font-bold text-lg leading-8">
                 {price[idx + 1] / item.bundle || 1}
               </div>
+              {/* 재료 합계 */}
               <div className="w-[15%] text-end py-2 font-bold text-lg leading-8">
                 {ingredientSum[idx + 1] || 1}
               </div>
