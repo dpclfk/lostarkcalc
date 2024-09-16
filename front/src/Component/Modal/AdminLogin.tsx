@@ -47,13 +47,13 @@ const AdminLogin = ({ setModal, setAdmin }: IProps): JSX.Element => {
             type="password"
             autoComplete="off"
           />
+          <button
+            className="bg-layoutcolor text-white rounded px-2 py-1"
+            onClick={() => adminlogin.refetch()}
+          >
+            확인
+          </button>
         </form>
-        <button
-          className="bg-layoutcolor text-white rounded px-2 py-1"
-          onClick={() => adminlogin.refetch()}
-        >
-          확인
-        </button>
       </div>
       {errormessage ? (
         <div className="items-center justify-center flex px-[20%] w-full text-xl text-cancelcolor">

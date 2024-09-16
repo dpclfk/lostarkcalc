@@ -1,4 +1,7 @@
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import serverbase from "../lib/server";
+import { useEffect } from "react";
 
 interface IProps {
   admin: boolean;
@@ -7,6 +10,22 @@ interface IProps {
 
 const Layout = ({ admin, setAdmin }: IProps): JSX.Element => {
   const navigate = useNavigate();
+
+  const admindelete = useQuery({
+    queryKey: ["admincheck"],
+    queryFn: async (): Promise<{ admin: boolean }> => {
+      const response = await serverbase.delete(`/admin`);
+      return response.data;
+    },
+    enabled: false,
+    retry: 0,
+  });
+
+  useEffect(() => {
+    if (!admindelete.data?.admin) {
+      setAdmin(false);
+    }
+  }, [admindelete]);
 
   return (
     <>
@@ -18,6 +37,7 @@ const Layout = ({ admin, setAdmin }: IProps): JSX.Element => {
           <div
             className="text-xl bg-admincolor py-1 px-2 rounded-lg min-w-[9rem]"
             onClick={() => {
+              admindelete.refetch();
               setAdmin(false);
             }}
           >

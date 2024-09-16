@@ -26,4 +26,13 @@ export class AdminService {
       return { admin: false };
     }
   }
+
+  async delete(session: any) {
+    if (session.admin) {
+      session.destroy();
+      return { admin: false };
+    } else {
+      return { admin: true };
+    }
+  }
 }

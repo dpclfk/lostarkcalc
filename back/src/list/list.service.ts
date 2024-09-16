@@ -83,11 +83,12 @@ export class ListService {
           {
             id: listCreation[i].id,
             itemName: listCreation[i].name,
-            currentMinPrice: listCreation[i].market.currentMinPrice,
+            currentMinPrice: listCreation[i].market.currentMinPrice || 0,
             ingredientAllCost: ingredientAllCost * 100,
             createCost: listCreation[i].createCost,
             energy: listCreation[i].energy,
             createBundle: listCreation[i].createBundle,
+            marketBundle: listCreation[i].market.bundle,
             categoryId: listCreation[i].category.id,
             icon: listCreation[i].icon.icon,
           },

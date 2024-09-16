@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Session, Res, Get, Req } from '@nestjs/common';
+import { Controller, Post, Body, Res, Get, Req, Delete } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { Request, Response } from 'express';
@@ -27,6 +27,12 @@ export class AdminController {
     const admin = await this.adminService.findAll(req.session.admin);
 
     res.json(admin);
-    // res.send();
+  }
+
+  @Delete()
+  async delete(@Res() res: Response, @Req() req: Request) {
+    const admin = await this.adminService.delete(req.session);
+
+    res.json(admin.admin);
   }
 }
