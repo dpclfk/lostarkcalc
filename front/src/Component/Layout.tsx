@@ -25,7 +25,7 @@ const Layout = ({ admin, setAdmin }: IProps): JSX.Element => {
     if (!admindelete.data?.admin) {
       setAdmin(false);
     }
-  }, [admindelete]);
+  }, [admindelete, setAdmin]);
 
   return (
     <>
