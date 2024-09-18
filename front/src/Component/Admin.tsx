@@ -5,7 +5,7 @@ import { CateList, List } from "./Main";
 import { Detailitem } from "./Detailitem";
 import { numberinput, stringinput } from "../lib/inputnumber";
 import gold from "../gold.png";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export interface Market {
   name: string;
