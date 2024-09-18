@@ -9,6 +9,11 @@ export class DetailitemController {
   @Get(':id')
   async findOne(@Param('id') id: string, @Res() res: Response) {
     const detailitem = await this.detailitemService.findOne(+id);
-    res.json(detailitem);
+
+    if (detailitem.statusCode)
+      res.status(detailitem.statusCode).json({ result: detailitem.result });
+    else {
+      res.json(detailitem);
+    }
   }
 }

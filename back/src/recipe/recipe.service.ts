@@ -28,7 +28,7 @@ export class RecipeService {
 
   async create(createRecipeDto: CreateRecipeDto, session: any) {
     try {
-      if (session.user !== this.configService.get<string>(`ADMINNAME`)) {
+      if (session.admin !== this.configService.get<string>(`ADMINNAME`)) {
         throw Error('not admin');
       }
       const findicategory = await this.categoryRepository.findOne({
@@ -107,7 +107,7 @@ export class RecipeService {
 
   async update(id: number, updateRecipeDto: UpdateRecipeDto, session: any) {
     try {
-      if (session.user !== this.configService.get<string>(`ADMINNAME`)) {
+      if (session.admin !== this.configService.get<string>(`ADMINNAME`)) {
         throw Error('not admin');
       }
       const findicategory = await this.categoryRepository.findOne({
@@ -192,7 +192,7 @@ export class RecipeService {
 
   async remove(id: number, session: any) {
     try {
-      if (session.user !== this.configService.get<string>(`ADMINNAME`)) {
+      if (session.admin !== this.configService.get<string>(`ADMINNAME`)) {
         throw Error('not admin');
       }
       this.ingredientRepository.delete({ creation: { id: id } });

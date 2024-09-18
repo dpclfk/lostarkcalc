@@ -19,7 +19,7 @@ export class MarketService {
 
   async create(createMarketDto: CreateMarketDto, session: any) {
     try {
-      if (session.user !== this.configService.get<string>(`ADMINNAME`)) {
+      if (session.admin !== this.configService.get<string>(`ADMINNAME`)) {
         throw Error('not admin');
       }
       if (
@@ -110,7 +110,7 @@ export class MarketService {
 
   async update(id: number, updateMarketDto: UpdateMarketDto, session: any) {
     try {
-      if (session.user !== this.configService.get<string>(`ADMINNAME`)) {
+      if (session.admin !== this.configService.get<string>(`ADMINNAME`)) {
         throw Error('not admin');
       }
       const patchable = await this.marketRepository.findOne({
@@ -158,7 +158,7 @@ export class MarketService {
 
   async remove(id: number, session: any) {
     try {
-      if (session.user !== this.configService.get<string>(`ADMINNAME`)) {
+      if (session.admin !== this.configService.get<string>(`ADMINNAME`)) {
         throw Error('not admin');
       }
       const patchable = await this.marketRepository.findOne({

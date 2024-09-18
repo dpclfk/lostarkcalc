@@ -41,7 +41,7 @@ const AdminLogin = ({ setModal, setAdmin }: IProps): JSX.Element => {
       <div className="items-center justify-center flex px-[20%] w-full text-xl font-bold pt-8 gap-4">
         <form action="">
           <input
-            className="border-solid border-2 flex-1 rounded px-1"
+            className="border-solid border-2 flex-1 rounded px-1 mr-2"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
