@@ -688,13 +688,12 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
               >
                 초기화
               </button>
-              <Link
-                to={"/"}
+              <button
                 className="bg-submitcolor px-4 text-lg leading-8"
                 onClick={() => createrecipe.refetch()}
               >
                 저장
-              </Link>
+              </button>
             </div>
           </div>
         </div>
