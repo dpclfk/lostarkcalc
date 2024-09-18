@@ -307,7 +307,7 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
                     setIngredientSearch(false);
                   }}
                 />
-                <div className="fixed w-full absolute shadow-lg">
+                <div className="fixed w-full absolute shadow-lg z-10">
                   {recipe && recipeSearch ? (
                     list.data?.map((item: List, idx: number) => (
                       <div
@@ -480,7 +480,7 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
                   <div className="flex justify-center bg-white pb-4 gap-4">
                     <div className="relative flex-1">
                       <input
-                        className="border-solid border-2 w-full rounded px-1"
+                        className="border-solid border-2 w-full rounded px-1 h-full"
                         type="text"
                         placeholder="거래소"
                         value={marketName}
