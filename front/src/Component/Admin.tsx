@@ -73,7 +73,6 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
         const response = await serverbase.get(`/detailitem/${itemId}`);
         return response.data;
       } catch (error: any) {
-        console.log(error.message);
         throw new Error("Failed to Get Detail Item");
       }
     },

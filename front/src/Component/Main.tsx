@@ -3,7 +3,6 @@ import { Lastreq } from "../lib/listaxios";
 import serverbase from "../lib/server";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { numberinput } from "../lib/inputnumber";
 import errorimg from "../errorimg.png";
 
 export interface List {
@@ -40,9 +39,10 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
   const [cate, setCate] = useState<CateList[]>([{ id: 0, categoryName: "관심" }]);
   const [loading, setLoading] = useState<boolean>(false);
   const [favorites, setFavorites] = useState<number[]>([]);
-  const [page] = useState<number>(10);
+  const [page, setPage] = useState<number>(10);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [maxPageNumber, setMaxPageNumber] = useState<number>(1);
+  const [numberchange, SetNumberchange] = useState<boolean>(false);
 
   const catelist = useQuery({
     queryKey: ["category"],
@@ -425,22 +425,64 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
       <div className="bg-white">
         <div className="leading-8 py-4 mx-3 flex justify-end px-4 gap-4">
           <div>한번에 보여줄 최대 개수</div>
-          <div>{page}개</div>
+          <div className="relative" onClick={() => SetNumberchange(!numberchange)}>
+            <div className="cursor-pointer hover:bg-hovercolor px-2">{page}개</div>
+            {numberchange ? (
+              <div className="absolute bg-white w-full z-10">
+                <div className="hover:bg-hovercolor">
+                  <button
+                    onClick={() => {
+                      setPage(5);
+                    }}
+                  >
+                    5
+                  </button>
+                </div>
+                <div className="hover:bg-hovercolor">
+                  <button
+                    onClick={() => {
+                      setPage(10);
+                    }}
+                  >
+                    10
+                  </button>
+                </div>
+                <div className="hover:bg-hovercolor">
+                  <button
+                    onClick={() => {
+                      setPage(15);
+                    }}
+                  >
+                    15
+                  </button>
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
+          </div>
           <div>현재 페이지</div>
-          <input
-            className="w-12 border border-footercolor rounded pl-2"
-            type="number"
-            value={pageNumber}
-            onChange={(e) =>
-              setPageNumber(
-                numberinput(e.target.value) > maxPageNumber
-                  ? maxPageNumber
-                  : numberinput(e.target.value) === 0
-                  ? 1
-                  : numberinput(e.target.value)
-              )
-            }
-          />
+          <div className="w-12 flex justify-center">
+            <button
+              className="px-2 hover:bg-hovercolor"
+              onClick={() => {
+                pageNumber <= 1 ? setPageNumber(1) : setPageNumber(pageNumber - 1);
+              }}
+            >
+              &lt;
+            </button>
+            <div className="w-4 px-2 flex justify-center">{pageNumber}</div>
+            <button
+              className="px-2 hover:bg-hovercolor"
+              onClick={() => {
+                pageNumber >= maxPageNumber
+                  ? setPageNumber(maxPageNumber)
+                  : setPageNumber(pageNumber + 1);
+              }}
+            >
+              &gt;
+            </button>
+          </div>
           <div>최대 페이지</div>
           <div>{maxPageNumber}</div>
         </div>
