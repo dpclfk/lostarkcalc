@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import serverbase from "../lib/server";
-import { useEffect } from "react";
 
 interface IProps {
   admin: boolean;
@@ -15,17 +14,12 @@ const Layout = ({ admin, setAdmin }: IProps): JSX.Element => {
     queryKey: ["admincheck"],
     queryFn: async (): Promise<{ admin: boolean }> => {
       const response = await serverbase.delete(`/admin`);
+      setAdmin(false);
       return response.data;
     },
     enabled: false,
     retry: 0,
   });
-
-  useEffect(() => {
-    if (!admindelete.data?.admin) {
-      setAdmin(false);
-    }
-  }, [admindelete, setAdmin]);
 
   return (
     <>
