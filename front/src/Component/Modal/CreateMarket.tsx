@@ -35,7 +35,7 @@ const CreateMarket = ({ setModal }: IProps): JSX.Element => {
 
   return (
     <>
-      <div className="px-8">
+      <div className="px-8 pb-8">
         <div className="text-center text-2xl font-bold pb-6 pt-4">
           <div>추가할 재료 정보를 입력하세요</div>
         </div>

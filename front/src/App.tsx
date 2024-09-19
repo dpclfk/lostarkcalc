@@ -62,7 +62,11 @@ const App = (): JSX.Element => {
     <>
       {modal ? (
         <div>
-          <div className="fixed w-[30%] h-[80%] bg-white justify-center mx-[35%] top-[10%] z-30 min-w-[40rem] max-w-[60rem] overflow-auto pb-4">
+          <div
+            className={`${
+              title === "재료 정보 수정 및 삭제하기" ? "h-[80%]" : ""
+            } fixed w-[30%] bg-white justify-center max-h-[80%] mx-[35%] top-[10%] z-30 min-w-[40rem] max-w-[60rem] overflow-auto pb-4`}
+          >
             <ModalTitle title={title}></ModalTitle>
             {title === "재료 정보 추가" ? (
               <CreateMarket setModal={setModal}></CreateMarket>

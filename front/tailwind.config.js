@@ -12,6 +12,7 @@ module.exports = {
         footercolor: "#9D9D9D",
         bgcolor: "#EFEBE9",
         modalcolor: "#342D2A",
+        hovercolor: "#CFCFCF",
       },
     },
   },

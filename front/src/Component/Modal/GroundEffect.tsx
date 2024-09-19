@@ -26,7 +26,7 @@ const GroundEffect = ({ setModal, setGround, setRecalc }: IProps): JSX.Element =
 
   return (
     <>
-      <div className="px-8 py-4">
+      <div className="pl-8 py-4">
         <div className="pb-4">
           <div className="text-xl font-bold text-footercolor">제작시간 감소</div>
           <div className="flex">
@@ -330,7 +330,7 @@ const GroundEffect = ({ setModal, setGround, setRecalc }: IProps): JSX.Element =
       </div>
       <div className="border-t-[1px] border-footercolor flex justify-end px-8 py-8 text-xl font-bold">
         <button
-          className="hover:bg-footercolor px-4 py-1"
+          className="hover:bg-hovercolor px-4 py-1"
           onClick={() => {
             setModal(false);
             setGround(false);
@@ -339,7 +339,7 @@ const GroundEffect = ({ setModal, setGround, setRecalc }: IProps): JSX.Element =
           취소
         </button>
         <button
-          className="hover:bg-footercolor px-4 py-1"
+          className="hover:bg-hovercolor px-4 py-1"
           onClick={() => {
             setModal(false);
             setGround(false);

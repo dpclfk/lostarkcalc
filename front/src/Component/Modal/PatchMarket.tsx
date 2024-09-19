@@ -87,7 +87,7 @@ const PatchMarket = ({ setModal }: IProps): JSX.Element => {
   }, [market.isLoading]);
 
   return (
-    <>
+    <div>
       {search ? (
         <div
           className="w-full h-full bg-opacity-25 inset-0 flex fixed justify-center items-center"
@@ -150,10 +150,18 @@ const PatchMarket = ({ setModal }: IProps): JSX.Element => {
                     type="text"
                     placeholder="거래소"
                     value={itemSearch}
-                    onChange={(e) => setItemSearch(stringinput(e.target.value))}
+                    onChange={(e) => {
+                      setItemSearch(stringinput(e.target.value));
+                      setsearch(false);
+                    }}
                     onClick={() => setsearch(false)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        market.refetch();
+                      }
+                    }}
                   />
-                  <div className="absolute w-full">
+                  <div className="absolute w-full z-10 max-h-[20rem] overflow-auto">
                     {loading ? (
                       <div className="flex justify-center text-3xl bg-white font-bold">검색중</div>
                     ) : (
@@ -195,7 +203,9 @@ const PatchMarket = ({ setModal }: IProps): JSX.Element => {
                         </div>
                       ))
                     ) : market.data?.length === 0 ? (
-                      <div>nodata</div>
+                      <div className="flex justify-center bg-white border-solid border-b border-footercolor text-2xl">
+                        <div>nodata</div>
+                      </div>
                     ) : (
                       ""
                     )}
@@ -297,7 +307,7 @@ const PatchMarket = ({ setModal }: IProps): JSX.Element => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 export default PatchMarket;

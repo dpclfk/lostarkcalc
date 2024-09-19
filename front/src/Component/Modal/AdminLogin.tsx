@@ -23,7 +23,6 @@ const AdminLogin = ({ setModal, setAdmin }: IProps): JSX.Element => {
         setModal(false);
         return response.data;
       } catch (error: any) {
-        console.log(error.response.data);
         setErrormessage("비밀번호 오류");
 
         throw new Error("error password");
@@ -34,12 +33,18 @@ const AdminLogin = ({ setModal, setAdmin }: IProps): JSX.Element => {
   });
 
   return (
-    <>
+    <div className="pb-40">
       <div className="items-center justify-center flex px-6 w-full text-xl font-bold pt-20">
         <div>비밀번호를 입력하세요</div>
       </div>
       <div className="items-center justify-center flex px-[20%] w-full text-xl font-bold pt-8 gap-4">
-        <form action="">
+        <form
+          action=""
+          onSubmit={(e) => {
+            e.preventDefault();
+            adminlogin.refetch();
+          }}
+        >
           <input
             className="border-solid border-2 flex-1 rounded px-1 mr-2"
             value={password}
@@ -49,6 +54,7 @@ const AdminLogin = ({ setModal, setAdmin }: IProps): JSX.Element => {
           />
           <button
             className="bg-layoutcolor text-white rounded px-2 py-1"
+            type="button"
             onClick={() => adminlogin.refetch()}
           >
             확인
@@ -62,7 +68,7 @@ const AdminLogin = ({ setModal, setAdmin }: IProps): JSX.Element => {
       ) : (
         ""
       )}
-    </>
+    </div>
   );
 };
 

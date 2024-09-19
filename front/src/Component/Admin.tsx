@@ -484,11 +484,19 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
                         type="text"
                         placeholder="거래소"
                         value={marketName}
-                        onChange={(e) => setMarketName(stringinput(e.target.value))}
+                        onChange={(e) => {
+                          setMarketName(stringinput(e.target.value));
+                          setIngredientSearch(false);
+                        }}
                         onClick={() => {
                           setRecipeSearch(false);
                           setMarketSearch(false);
                           setIngredientSearch(false);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            ingredient.refetch();
+                          }
                         }}
                       />
                       <div>
@@ -531,23 +539,27 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
                     </button>
                   </div>
                 </div>
-                <div
-                  className="py-4 text-xl font-bold"
-                  onClick={() => {
-                    setModal(true);
-                    setTitle("재료 정보 추가");
-                  }}
-                >
-                  재료 정보 추가하기
+                <div className="py-4">
+                  <button
+                    className="text-xl font-bold hover:bg-hovercolor"
+                    onClick={() => {
+                      setModal(true);
+                      setTitle("재료 정보 추가");
+                    }}
+                  >
+                    재료 정보 추가하기
+                  </button>
                 </div>
-                <div
-                  className="pb-4 text-xl font-bold"
-                  onClick={() => {
-                    setModal(true);
-                    setTitle("재료 정보 수정 및 삭제하기");
-                  }}
-                >
-                  재료 정보 수정 및 삭제하기
+                <div className="pb-4">
+                  <button
+                    className="hover:bg-hovercolor text-xl font-bold"
+                    onClick={() => {
+                      setModal(true);
+                      setTitle("재료 정보 수정 및 삭제하기");
+                    }}
+                  >
+                    재료 정보 수정 및 삭제하기
+                  </button>
                 </div>
               </div>
               {/* 재료추가 하단 */}

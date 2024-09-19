@@ -243,25 +243,25 @@ const Detail = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
             <div className="w-24">
               <div>추천</div>
               {+(creationPrice - sumcreation / data?.creation.createBundle!).toFixed(2) > 0 ? (
-                <div className="text-2xl">제작</div>
+                <div className="text-2xl text-green-500">제작</div>
               ) : (
-                <div className="text-2xl">직접판매</div>
+                <div className="text-2xl text-red-500">판매</div>
               )}
             </div>
             <div className="w-24">
               <div>직접사용</div>
               {+(creationPrice - sumcreation / data?.creation.createBundle!).toFixed(2) > 0 ? (
-                <div className="text-2xl">이득</div>
+                <div className="text-2xl text-green-500">이득</div>
               ) : (
-                <div className="text-2xl">손해</div>
+                <div className="text-2xl text-red-500">손해</div>
               )}
             </div>
             <div className="w-24">
               <div>판매</div>
               {sellprofit > 0 ? (
-                <div className="text-2xl">이득</div>
+                <div className="text-2xl text-green-500">이득</div>
               ) : (
-                <div className="text-2xl">손해</div>
+                <div className="text-2xl text-red-500">손해</div>
               )}
             </div>
           </div>

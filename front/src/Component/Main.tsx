@@ -114,6 +114,12 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
     }
   }, [list.data, page]);
 
+  useEffect(() => {
+    if (search.length === 0) {
+      list.refetch();
+    }
+  }, [search, list]);
+
   return (
     <div className="m-auto w-11/12 min-w-[60rem] max-w-[90rem] ">
       <div className="mt-8 h-auto bg-white ">
@@ -144,7 +150,14 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
             type="text"
             placeholder="레시피"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                queryclient.invalidateQueries({ queryKey: ["list"] });
+              }
+            }}
           />
           <button
             className="bg-layoutcolor text-white rounded px-4 py-1"
@@ -211,8 +224,8 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                     className="flex border-solid border-b-[1px] border-b-footercolor leading-8 w-[88.5rem]"
                   >
                     <button
-                      className={`py-4 w-12 z-10 ${
-                        favorites.indexOf(item.id) === -1 ? "" : "text-cancelcolor"
+                      className={`py-4 w-12 z-10 hover:bg-hovercolor ${
+                        favorites.indexOf(item.id) === -1 ? "" : "text-yellow-500"
                       }`}
                       onClick={() => {
                         favorites.indexOf(item.id) === -1
@@ -220,10 +233,12 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                           : setFavorites(favorites.filter((element) => element !== item.id));
                       }}
                     >
-                      별
+                      {`
+                      ${favorites.indexOf(item.id) === -1 ? "☆" : "★"}
+                      `}
                     </button>
                     <div
-                      className="flex justify-between w-full hover:bg-footercolor"
+                      className="flex justify-between w-full hover:bg-hovercolor cursor-pointer"
                       onClick={() => {
                         navigate(`${item.id}`);
                       }}
@@ -361,9 +376,11 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                               ) *
                                 100) /
                               100 >
-                          0
-                            ? "이득"
-                            : "손해"}
+                          0 ? (
+                            <div className="text-green-500">이득</div>
+                          ) : (
+                            <div className="text-red-500">손해</div>
+                          )}
                         </div>
                         {/* 제작후 판매시 이득 손해 판단 */}
                         <div className="w-20 py-4">
@@ -386,9 +403,11 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                             ).toFixed(2) *
                               item.createBundle) /
                             item.marketBundle
-                          ).toFixed(2) > 0
-                            ? "이득"
-                            : "손해"}
+                          ).toFixed(2) > 0 ? (
+                            <div className="text-green-500">이득</div>
+                          ) : (
+                            <div className="text-red-500">손해</div>
+                          )}
                         </div>
                       </div>
                     </div>
