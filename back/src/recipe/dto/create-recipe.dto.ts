@@ -14,7 +14,7 @@ export class CreateRecipeDto {
 
   @IsNumber()
   @IsNotEmpty()
-  @Min(1)
+  @Min(0)
   cost: number;
 
   @IsNumber()
@@ -51,27 +51,4 @@ export class CreateRecipeDto {
     itemName: string;
     ingredientCount: number;
   }[];
-
-  // @ValidateNested({ each: true })
-  // ingredient: [];
-  // // {
-  // //   ingredient_count: number;
-  // // },
-
-  // @IsNumber()
-  // @IsNotEmpty()
-  // @Min(1)
-  // ingredient_count: number;
-
-  //////////
-
-  // item: {
-  //   itemName: string;
-  // };
-  // ingredient: [
-  //   {
-  //     itemName: string;
-  //     ingredient_count: number;
-  //   },
-  // ];
 }

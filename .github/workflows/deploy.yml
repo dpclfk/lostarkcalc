@@ -183,5 +183,6 @@ jobs:
             
             npm install -g pm2
             pm2 stop all
+            pm2 delete all
             cd /var/www/backend
             pm2 start npm --name "backend" -- start'
