@@ -20,6 +20,7 @@ const AdminLogin = ({ setModal, setAdmin }: IProps): JSX.Element => {
         });
         setAdmin(true);
         setErrormessage("");
+        window.scrollTo(0, 0);
         setModal(false);
         return response.data;
       } catch (error: any) {

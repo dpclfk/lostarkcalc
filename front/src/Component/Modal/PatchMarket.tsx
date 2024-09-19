@@ -146,8 +146,8 @@ const PatchMarket = ({ setModal }: IProps): JSX.Element => {
         <div className="px-8">
           <div>
             <div className="text-2xl font-bold text-start pb-4 px-[10%] pt-4">
-              <div className="text-center">추가할 재료 정보를 입력하세요</div>
-              <div className="text-center pb-4">검색후 수정이 가능합니다</div>
+              <div className="text-center">수정 및 삭제할 재료 정보를 입력하세요</div>
+              <div className="text-center pb-4">검색후 수정 및 삭제가 가능합니다</div>
               <div className="pb-2">재료 검색</div>
               <div className="flex justify-center gap-4 font-normal text-xl">
                 <div className="flex-1 relative">
@@ -177,7 +177,7 @@ const PatchMarket = ({ setModal }: IProps): JSX.Element => {
                       market.data?.map((item: NewMarket, idx: number) => (
                         <div
                           key={idx}
-                          className="bg-white flex border-solid border-b border-footercolor py-2 px-4"
+                          className="bg-white flex border-solid border-b border-footercolor py-2 px-4 hover:bg-hovercolor cursor-pointer"
                           onClick={() => {
                             if (item.patchable) {
                               setItemName(item.name);

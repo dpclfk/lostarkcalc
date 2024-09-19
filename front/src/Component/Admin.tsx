@@ -312,7 +312,7 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
                     list.data?.map((item: List, idx: number) => (
                       <div
                         key={idx}
-                        className="bg-white flex border-solid border-b border-footercolor py-2 px-4 z-10"
+                        className="bg-white flex border-solid border-b border-footercolor py-2 px-4 z-10 hover:bg-hovercolor cursor-pointer"
                         onClick={() => {
                           setItemId(item.id);
                           setRecipeSearch(false);
@@ -334,7 +334,7 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
                     market.data?.map((item: Market, idx: number) => (
                       <div
                         key={idx}
-                        className="bg-white flex border-solid border-b border-footercolor py-2 px-4"
+                        className="bg-white flex border-solid border-b border-footercolor py-2 px-4 hover:bg-hovercolor cursor-pointer"
                         onClick={() => {
                           setMarketSearch(false);
                           setRecipe("");
@@ -512,7 +512,7 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
                             ? ingredient.data?.map((item: Market, idx: number) => (
                                 <div
                                   key={idx}
-                                  className="bg-white flex border-solid border-b border-footercolor py-2 px-4 z-10"
+                                  className="bg-white flex border-solid border-b border-footercolor py-2 px-4 z-10 hover:bg-hovercolor cursor-pointer"
                                   onClick={() => {
                                     setIngredientName(item.name);
                                     setIngredientIcon(
