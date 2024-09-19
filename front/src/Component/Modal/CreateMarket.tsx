@@ -2,6 +2,7 @@ import { useState } from "react";
 import { numberinput, stringinput } from "../../lib/inputnumber";
 import { useQuery } from "@tanstack/react-query";
 import serverbase from "../../lib/server";
+import errorimg from "../../errorimg.png";
 
 interface IProps {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -70,7 +71,12 @@ const CreateMarket = ({ setModal }: IProps): JSX.Element => {
           </div>
         </div>
         <div className="px-[10%] flex justify-end">
-          <img className="w-[16rem] h-[16rem]" src={iconUrl} alt="" />
+          <img
+            className="w-[16rem] h-[16rem]"
+            src={iconUrl}
+            alt="icon"
+            onError={(e) => (e.currentTarget.src = errorimg)}
+          />
         </div>
         <div className="flex justify-center gap-4 pt-4">
           <button

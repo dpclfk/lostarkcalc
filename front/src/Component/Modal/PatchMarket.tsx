@@ -3,6 +3,7 @@ import { numberinput, stringinput } from "../../lib/inputnumber";
 import { useQuery } from "@tanstack/react-query";
 import serverbase from "../../lib/server";
 import { Market } from "../Admin";
+import errorimg from "../../errorimg.png";
 
 interface IProps {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -113,7 +114,12 @@ const PatchMarket = ({ setModal }: IProps): JSX.Element => {
               <div className="w-[50%] text-end text-xl font-bold truncate">{iconUrl}</div>
             </div>
             <div className="px-[20%] flex justify-end">
-              <img className="w-[16rem] h-[16rem]" src={iconUrl} alt="" />
+              <img
+                className="w-[16rem] h-[16rem]"
+                src={iconUrl}
+                alt="icon"
+                onError={(e) => (e.currentTarget.src = errorimg)}
+              />
             </div>
             <div className="flex justify-center gap-8 pt-4">
               <button
@@ -196,6 +202,7 @@ const PatchMarket = ({ setModal }: IProps): JSX.Element => {
                             <img
                               src={`https://cdn-lostark.game.onstove.com/efui_iconatlas/${item.icon}`}
                               alt="item"
+                              onError={(e) => (e.currentTarget.src = errorimg)}
                               className="w-12 h-12"
                             />
                           </div>
@@ -280,7 +287,12 @@ const PatchMarket = ({ setModal }: IProps): JSX.Element => {
                   </div>
                 </div>
                 <div className="px-[10%] flex justify-end">
-                  <img className="w-[16rem] h-[16rem]" src={iconUrl} alt="" />
+                  <img
+                    className="w-[16rem] h-[16rem]"
+                    src={iconUrl}
+                    alt="icon"
+                    onError={(e) => (e.currentTarget.src = errorimg)}
+                  />
                 </div>
                 <div className="flex justify-center gap-4 pt-4">
                   <button

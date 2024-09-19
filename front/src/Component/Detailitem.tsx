@@ -5,6 +5,7 @@ import serverbase from "../lib/server";
 import { Lastreq } from "../lib/listaxios";
 import gold from "../gold.png";
 import { numberinput } from "../lib/inputnumber";
+import errorimg from "../errorimg.png";
 
 export interface Detailitem {
   creation: {
@@ -418,6 +419,7 @@ const Detail = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                 <img
                   className="w-12 h-12"
                   src={`https://cdn-lostark.game.onstove.com/efui_iconatlas/${item.icon}`}
+                  onError={(e) => (e.currentTarget.src = errorimg)}
                   alt="in"
                 />
                 <div className="py-2 pl-2 text-lg leading-8">{item.itemName}</div>
@@ -453,7 +455,12 @@ const Detail = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
           {/* 재료정보 맵 끝 및 골드 관련 div */}
           <div className="flex px-4 border-solid border-t border-footercolor">
             <div className="flex-1 text-start flex">
-              <img className="w-12 h-12" src={gold} alt="in" />
+              <img
+                className="w-12 h-12"
+                src={gold}
+                alt="ingredient"
+                onError={(e) => (e.currentTarget.src = errorimg)}
+              />
               <div className="py-2 pl-2 text-lg leading-8">골드</div>
             </div>
             <div className="w-[15%] text-end py-2 font-bold text-lg leading-8">

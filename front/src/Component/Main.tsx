@@ -4,6 +4,7 @@ import serverbase from "../lib/server";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { numberinput } from "../lib/inputnumber";
+import errorimg from "../errorimg.png";
 
 export interface List {
   id: number;
@@ -248,6 +249,7 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                           <img
                             className="w-16"
                             src={`https://cdn-lostark.game.onstove.com/efui_iconatlas/${item.icon}`}
+                            onError={(e) => (e.currentTarget.src = errorimg)}
                             alt="recipe img"
                           />
                           <div className="py-4">{item.itemName}</div>

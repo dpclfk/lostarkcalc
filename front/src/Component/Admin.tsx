@@ -6,6 +6,7 @@ import { Detailitem } from "./Detailitem";
 import { numberinput, stringinput } from "../lib/inputnumber";
 import gold from "../gold.png";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import errorimg from "../errorimg.png";
 
 export interface Market {
   name: string;
@@ -323,6 +324,7 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
                           <img
                             src={`https://cdn-lostark.game.onstove.com/efui_iconatlas/${item.icon}`}
                             alt="item"
+                            onError={(e) => (e.currentTarget.src = errorimg)}
                             className="w-12 h-12"
                           />
                         </div>
@@ -349,6 +351,7 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
                           <img
                             src={`https://cdn-lostark.game.onstove.com/efui_iconatlas/${item.icon}`}
                             alt="item"
+                            onError={(e) => (e.currentTarget.src = errorimg)}
                             className="w-12 h-12"
                           />
                         </div>
@@ -468,7 +471,12 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
                 ></input>
               </div>
               <div>
-                <img className="w-40 h-40" src={icon} alt="icon" />
+                <img
+                  className="w-40 h-40"
+                  src={icon}
+                  onError={(e) => (e.currentTarget.src = errorimg)}
+                  alt="icon"
+                />
               </div>
             </div>
             {/* 제작정보 끝, 재료검색 */}
@@ -519,6 +527,7 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
                                     <img
                                       src={`https://cdn-lostark.game.onstove.com/efui_iconatlas/${item.icon}`}
                                       alt="item"
+                                      onError={(e) => (e.currentTarget.src = errorimg)}
                                       className="w-12 h-12"
                                     />
                                   </div>
@@ -569,7 +578,12 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
                   <div className="w-[50%] text-start py-1">재료명</div>
                   <div className="font-bold w-[50%] text-end flex justify-between">
                     <div>
-                      <img src={ingredientIcon} alt="item" className="w-8 h-8" />
+                      <img
+                        src={ingredientIcon}
+                        alt="item"
+                        className="w-8 h-8"
+                        onError={(e) => (e.currentTarget.src = errorimg)}
+                      />
                     </div>
                     <div className="py-1">{ingredientName}</div>
                   </div>
@@ -635,6 +649,7 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
                     <img
                       className="w-12 h-12"
                       src={`https://cdn-lostark.game.onstove.com/efui_iconatlas/${item.icon}`}
+                      onError={(e) => (e.currentTarget.src = errorimg)}
                       alt="in"
                     />
                     <div className="py-2 pl-4 text-lg leading-8">{item.name}</div>
@@ -671,7 +686,12 @@ const Admin = ({ setModal, setTitle, modal, admin }: IProps): JSX.Element => {
 
             <div className="flex px-4 border-solid border-t border-footercolor">
               <div className="flex-1 text-start flex">
-                <img className="w-12 h-12" src={gold} alt="in" />
+                <img
+                  className="w-12 h-12"
+                  src={gold}
+                  alt="ingredient"
+                  onError={(e) => (e.currentTarget.src = errorimg)}
+                />
                 <div className="py-2 pl-4 text-lg leading-8">골드</div>
               </div>
               <div className="py-2 font-bold text-lg pl-12 leading-8 w-[30%] flex justify-end">
