@@ -183,4 +183,5 @@ jobs:
             
             npm install -g pm2
             pm2 stop all
-            pm2 start /var/www/backend/dist/main.js --name backend'
+            cd /var/www/backend
+            pm2 start --name "backend" -- start'
