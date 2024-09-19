@@ -312,52 +312,65 @@ export class BasicvalueService {
 
     // 여기부터 creationarr로 반복문
     for (const creationOBJ of creationarr) {
-      let findmarket = await this.marketRepository.findOne({
-        where: { itemCode: creationOBJ.itemCode },
-      });
-      if (!findmarket) {
-        findmarket = await this.marketRepository.findOne({
-          where: { itemCode: 1 },
-        });
-      }
-      const findicon = await this.iconRepository.findOne({
-        where: { itemCode: creationOBJ.itemCode },
-      });
-      const findicategory = await this.categoryRepository.findOne({
-        where: { categoryName: creationOBJ.category },
-      });
-
-      let creation = this.creationRepository.create({
-        name: creationOBJ.name,
-        itemCode: creationOBJ.itemCode,
-        createBundle: creationOBJ.createBundle,
-        energy: creationOBJ.energy,
-        createTime: creationOBJ.createTime,
-        createCost: creationOBJ.createCost,
-        market: findmarket,
-        icon: findicon,
-        category: findicategory,
-      });
       try {
-        await this.creationRepository.save(creation);
-        // 재료 추가 반복문
-        for (const ingredient of creationOBJ.ingredient) {
-          const findmarket = await this.marketRepository.findOne({
-            where: { name: ingredient.name },
-          });
-          const ingredientCreate = this.ingredientRepository.create({
-            market: findmarket,
-            creation: creation,
-            ingredientCount: ingredient.ingredientCount,
-          });
-          await this.ingredientRepository.save(ingredientCreate);
+        const duplicationcheck = await this.creationRepository.findOne({
+          where: { name: creationOBJ.name },
+        });
+        if (duplicationcheck) {
+          throw Error('duplication Item');
         }
-        //재료 추가 반복문 끝
-      } catch (err) {
-        console.log(err.message);
+
+        let findmarket = await this.marketRepository.findOne({
+          where: { itemCode: creationOBJ.itemCode },
+        });
+        if (!findmarket) {
+          findmarket = await this.marketRepository.findOne({
+            where: { itemCode: 1 },
+          });
+        }
+        const findicon = await this.iconRepository.findOne({
+          where: { itemCode: creationOBJ.itemCode },
+        });
+        const findicategory = await this.categoryRepository.findOne({
+          where: { categoryName: creationOBJ.category },
+        });
+
+        let creation = this.creationRepository.create({
+          name: creationOBJ.name,
+          itemCode: creationOBJ.itemCode,
+          createBundle: creationOBJ.createBundle,
+          energy: creationOBJ.energy,
+          createTime: creationOBJ.createTime,
+          createCost: creationOBJ.createCost,
+          market: findmarket,
+          icon: findicon,
+          category: findicategory,
+        });
+        try {
+          await this.creationRepository.save(creation);
+          // 재료 추가 반복문
+          for (const ingredient of creationOBJ.ingredient) {
+            const findmarket = await this.marketRepository.findOne({
+              where: { name: ingredient.name },
+            });
+            const ingredientCreate = this.ingredientRepository.create({
+              market: findmarket,
+              creation: creation,
+              ingredientCount: ingredient.ingredientCount,
+            });
+            await this.ingredientRepository.save(ingredientCreate);
+          }
+          //재료 추가 반복문 끝
+        } catch (err) {
+          console.log(err.message);
+        }
+      } catch (error) {
+        if (error.message.includes('duplication Item')) {
+        } else {
+          console.log(error.message);
+        }
       }
     }
-
     // 여기서 반복문 끝
   }
 }

@@ -58,6 +58,10 @@ const Detail = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
     }
   }, [param.id, navigate]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // 처음에 데이터 받아옴
   const { data } = useQuery({
     queryKey: ["detailitem"],
