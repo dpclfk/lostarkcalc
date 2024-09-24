@@ -182,7 +182,7 @@ jobs:
             nvm use --lts
             
             npm install -g pm2
-            pm2 stop all
-            pm2 delete all
+            pm2 stop backend
+            pm2 delete backend
             cd /var/www/backend
             pm2 start npm --name "backend" -- start'
