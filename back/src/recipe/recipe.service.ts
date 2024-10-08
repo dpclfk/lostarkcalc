@@ -99,9 +99,9 @@ export class RecipeService {
       if (error.message.includes('Duplicate')) {
         return { statusCode: 405, result: 'duplication Item' };
       } else if (error.message.includes('not admin')) {
-        return { statusCode: 401, result: 'not admin' };
+        return { statusCode: 403, result: 'not admin' };
       }
-      return { statusCode: 401, result: 'fail' };
+      return { statusCode: 400, result: 'fail' };
     }
   }
 
@@ -182,7 +182,7 @@ export class RecipeService {
       if (error.message.includes('Duplicate')) {
         return { statusCode: 405, result: 'duplication Item' };
       } else if (error.message.includes('not admin')) {
-        return { statusCode: 401, result: 'not admin' };
+        return { statusCode: 403, result: 'not admin' };
       }
       return { statusCode: 400, result: 'fail' };
     }
@@ -200,7 +200,7 @@ export class RecipeService {
       return { result: 'ok' };
     } catch (error) {
       if (error.message.includes('not admin')) {
-        return { statusCode: 401, result: 'not admin' };
+        return { statusCode: 403, result: 'not admin' };
       }
       return { statusCode: 400, result: 'fail' };
     }

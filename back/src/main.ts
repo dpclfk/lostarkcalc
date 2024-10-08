@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 import * as FileStore from 'session-file-store';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -41,6 +42,15 @@ async function bootstrap() {
     }),
   );
   app.setGlobalPrefix('api');
+
+  const options = new DocumentBuilder()
+    .setTitle('lostark calc API')
+    .setDescription('로스트아크 계산기 API 명세서입니다.')
+    .setVersion('1.0')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('apidocs', app, document);
   await app.listen(3080);
 }
 bootstrap();

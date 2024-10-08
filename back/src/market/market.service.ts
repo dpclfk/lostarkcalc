@@ -62,9 +62,9 @@ export class MarketService {
       if (error.message.includes('Duplicate')) {
         return { statusCode: 405, result: 'duplication Item' };
       } else if (error.message.includes('imgurl check')) {
-        return { statusCode: 400, result: 'imgurl check' };
+        return { statusCode: 401, result: 'imgurl check' };
       } else if (error.message.includes('not admin')) {
-        return { statusCode: 401, result: 'not admin' };
+        return { statusCode: 403, result: 'not admin' };
       }
       return { statusCode: 400, result: 'fail' };
     }
@@ -101,7 +101,7 @@ export class MarketService {
     } catch (error) {
       console.log(error.message);
       if (error.message === 'empty search') {
-        return { statusCode: 400, result: 'empty search' };
+        return { statusCode: 401, result: 'empty search' };
       } else {
         return { statusCode: 400, result: 'fail' };
       }
@@ -148,9 +148,9 @@ export class MarketService {
       if (error.message.includes('Duplicate')) {
         return { statusCode: 405, result: 'duplication Item' };
       } else if (error.message.includes('not patch')) {
-        return { statusCode: 400, result: 'not fatch' };
+        return { statusCode: 401, result: 'not fatch' };
       } else if (error.message.includes('not admin')) {
-        return { statusCode: 401, result: 'not admin' };
+        return { statusCode: 403, result: 'not admin' };
       }
       return { statusCode: 400, result: 'fail' };
     }
@@ -171,9 +171,9 @@ export class MarketService {
       return { result: 'ok' };
     } catch (error) {
       if (error.message.includes('not patch')) {
-        return { statusCode: 400, result: 'not fatch' };
+        return { statusCode: 401, result: 'not fatch' };
       } else if (error.message.includes('not admin')) {
-        return { statusCode: 401, result: 'not admin' };
+        return { statusCode: 403, result: 'not admin' };
       }
       return { statusCode: 400, result: 'fail' };
     }

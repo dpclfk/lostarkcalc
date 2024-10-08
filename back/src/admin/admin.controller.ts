@@ -1,38 +1,74 @@
-import { Controller, Post, Body, Res, Get, Req, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  Get,
+  Delete,
+  Session,
+} from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { CreateAdminDto } from './dto/create-admin.dto';
-import { Request, Response } from 'express';
+import { AdminLogoutDto, CreateAdminDto, ResAdminDto } from './dto/admin.dto';
+import { Response } from 'express';
+import { ApiCreatedResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Post()
+  @ApiOperation({
+    summary: '어드민 권한부여 API',
+    description: '어드민 권한을 부여한다.',
+  })
+  @ApiCreatedResponse({
+    description: 'admin success',
+    example: { admin: true },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'admin fail',
+    example: { admin: false },
+  })
   async create(
     @Body() createAdminDto: CreateAdminDto,
-    @Req() req: Request,
     @Res() res: Response,
+    @Session() session: Record<string, any>,
   ) {
-    const admin = await this.adminService.create(createAdminDto, req);
-
-    if (admin.statusCode)
-      res.status(admin.statusCode).json({ admin: admin.admin });
-    else {
-      res.json({ admin: admin.admin });
+    const admin = await this.adminService.create(createAdminDto, session);
+    if (admin.statusCode === 401) {
+      res.status(401).json(admin);
+    } else {
+      res.json(admin);
     }
   }
 
   @Get()
-  async findAll(@Res() res: Response, @Req() req: Request) {
-    const admin = await this.adminService.findAll(req.session.admin);
-
+  @ApiOperation({
+    summary: '어드민 권한확인 API',
+    description: '어드민 권한을 확인한다.',
+  })
+  @ApiCreatedResponse({ description: 'admin true OR false', type: ResAdminDto })
+  async findAll(@Res() res: Response, @Session() session: Record<string, any>) {
+    const admin = await this.adminService.findAll(session);
     res.json(admin);
   }
 
   @Delete()
-  async delete(@Res() res: Response, @Req() req: Request) {
-    const admin = await this.adminService.delete(req.session);
-
-    res.json(admin.admin);
+  @ApiOperation({
+    summary: '어드민 로그아웃 API',
+    description: '어드민 로그아웃',
+  })
+  @ApiCreatedResponse({
+    description: 'admin logout true OR false',
+    type: AdminLogoutDto,
+  })
+  async delete(
+    @Res() res: Response,
+    @Session()
+    session: Record<string, any>,
+  ) {
+    const admin = await this.adminService.delete(session);
+    res.json(admin);
   }
 }

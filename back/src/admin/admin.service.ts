@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAdminDto } from './dto/create-admin.dto';
+import { CreateAdminDto } from './dto/admin.dto';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 
@@ -7,20 +7,19 @@ import { Request } from 'express';
 export class AdminService {
   constructor(private configService: ConfigService) {}
 
-  async create(createAdminDto: CreateAdminDto, req: Request) {
+  async create(createAdminDto: CreateAdminDto, session: any) {
     if (
       createAdminDto.password === this.configService.get<string>(`PAGEPASSWORD`)
     ) {
-      req.session.admin = this.configService.get<string>(`ADMINNAME`);
-
+      session.admin = this.configService.get<string>(`ADMINNAME`);
       return { admin: true };
     } else {
       return { statusCode: 401, admin: false };
     }
   }
 
-  async findAll(admin: string) {
-    if (admin) {
+  async findAll(session: any) {
+    if (session.admin === this.configService.get<string>(`ADMINNAME`)) {
       return { admin: true };
     } else {
       return { admin: false };
@@ -28,11 +27,11 @@ export class AdminService {
   }
 
   async delete(session: any) {
-    if (session.admin) {
-      session.destroy();
-      return { admin: false };
+    await session.destroy();
+    if (session.admin === this.configService.get<string>(`ADMINNAME`)) {
+      return { logout: false };
     } else {
-      return { admin: true };
+      return { logout: true };
     }
   }
 }

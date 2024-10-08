@@ -22,10 +22,11 @@ const AdminLogin = ({ setModal, setAdmin }: IProps): JSX.Element => {
         setErrormessage("");
         window.scrollTo(0, 0);
         setModal(false);
+        console.log("asdasd", response);
         return response.data;
       } catch (error: any) {
         setErrormessage("비밀번호 오류");
-
+        console.log("asdasd");
         throw new Error("error password");
       }
     },

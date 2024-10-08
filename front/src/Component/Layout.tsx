@@ -32,7 +32,6 @@ const Layout = ({ admin, setAdmin }: IProps): JSX.Element => {
             className="text-xl bg-admincolor py-1 px-2 rounded-lg min-w-[9rem] "
             onClick={() => {
               admindelete.refetch();
-              setAdmin(false);
             }}
           >
             관리자 로그아웃

@@ -11,7 +11,7 @@ export class CategoryService {
   ) {}
 
   async findAll() {
-    let categorylist = await this.categoryRepository.find({
+    let categorylist: Category[] = await this.categoryRepository.find({
       select: ['id', 'categoryName'],
     });
     return categorylist;

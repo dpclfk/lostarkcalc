@@ -1,6 +1,4 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ListModule } from './list/list.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeormcon } from './config/typeORM.config';
@@ -20,7 +18,6 @@ import { CategoryModule } from './category/category.module';
 import { MarketModule } from './market/market.module';
 import { LastreqModule } from './lastreq/lastreq.module';
 import { AdminModule } from './admin/admin.module';
-import path from 'path';
 
 @Module({
   imports: [
@@ -50,8 +47,7 @@ import path from 'path';
     LastreqModule,
     AdminModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, BasicvalueService],
+  providers: [BasicvalueService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

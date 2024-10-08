@@ -12,11 +12,10 @@ export class LastreqService {
 
   async findAll() {
     try {
-      let lastreq = await this.lastReqRepository.findOne({
+      let lastreq: LastRequest = await this.lastReqRepository.findOne({
         where: { id: 1 },
         select: ['lastReq'],
       });
-
       return lastreq;
     } catch (err) {
       return { result: 'fail' };
