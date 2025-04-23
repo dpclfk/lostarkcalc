@@ -186,4 +186,4 @@ jobs:
             pm2 stop backend
             pm2 delete backend
             cd /var/www/backend
-            pm2 start npm --name "backend" -- start'
+            pm2 start "npm run start:prod" --name backend'
