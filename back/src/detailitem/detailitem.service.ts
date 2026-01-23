@@ -4,6 +4,19 @@ import { Creation } from 'src/entities/creation.entity';
 import { Ingredient } from 'src/entities/ingredient.entity';
 import { Repository } from 'typeorm';
 
+interface IItem {
+  id: number;
+  itemName: string;
+  currentMinPrice: number;
+  createCost: number;
+  energy: number;
+  createTime: number;
+  createBundle: number;
+  categoryId: number;
+  marketBundle: number;
+  icon: string;
+  itemCode: number;
+}
 @Injectable()
 export class DetailitemService {
   constructor(
@@ -27,19 +40,7 @@ export class DetailitemService {
 
       let ingredient = [];
 
-      const calclist: {
-        id: number;
-        itemName: string;
-        currentMinPrice: number;
-        createCost: number;
-        energy: number;
-        createTime: number;
-        createBundle: number;
-        categoryId: number;
-        marketBundle: number;
-        icon: string;
-        itemCode: number;
-      } = {
+      const calclist: IItem = {
         id: listCreation.id,
         itemName: listCreation.name,
         currentMinPrice: listCreation.market.currentMinPrice,
@@ -71,7 +72,6 @@ export class DetailitemService {
         };
         ingredient = [...ingredient, ca];
       }
-
       return { creation: calclist, ingredient: ingredient };
     } catch (error) {
       return { statusCode: 400, result: 'fail' };
