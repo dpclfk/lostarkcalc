@@ -55,8 +55,6 @@
 
 - Swagger: API 명세 자동화 및 프론트엔드-백엔드 간 원활한 협업 프로세스 구축
 
-## 해당 프로젝트 노션 페이지 링크
-
 ## 실제 구현한 사이트
 
 - https://lostarkcalc.dpclfk.com/

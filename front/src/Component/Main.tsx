@@ -374,8 +374,7 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                                       item.createBundle) /
                                       item.marketBundle)) *
                                 100
-                              ).toFixed(2)}
-                          %
+                              ).toFixed(2) + "%"}
                         </div>
                         {/* 활동력 이익률 */}
                         <div className="w-32 py-4">
@@ -410,8 +409,7 @@ const Main = ({ admin, setGround, groundEffect }: IProps): JSX.Element => {
                                 ).toFixed(2) *
                                   100) /
                                 item.energy
-                              ).toFixed(2)}
-                          %
+                              ).toFixed(2) + "%"}
                         </div>
                         {/* 직접사용시 이득 손해 판단 */}
                         <div className="w-20 py-4">
