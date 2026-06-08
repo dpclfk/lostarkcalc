@@ -1,5 +1,16 @@
 # lostarkcalc
 
+## Tech Stack
+
+<div align="left">
+  <img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white"/>
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"/>
+  <img src="https://img.shields.io/badge/TypeORM-E84343?style=for-the-badge&logo=typeorm&logoColor=white"/>
+  <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black"/>
+  <img src="https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white"/>
+</div>
+
 ## 로스트아크 계산기
 
 - 로스트아크 Open API 데이터를 활용하여 아이템 제작 비용 대비 경매장 판매 수익성을 실시간으로 분석하고, 관리자 기능을 통해 제작 레시피를 유연하게 확장 가능한 서비스
