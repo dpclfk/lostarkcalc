@@ -1,6 +1,6 @@
 # lostarkcalc
 
-## 배포 링크
+## 배포 주소
 
 - [https://loa-calc.akdfid.kr](https://loa-calc.akdfid.kr)
 
@@ -22,6 +22,10 @@
 ## 로스트아크 계산기
 
 - 로스트아크 Open API 데이터를 활용하여 아이템 제작 비용 대비 경매장 판매 수익성을 실시간으로 분석하고, 관리자 기능을 통해 제작 레시피를 유연하게 확장 가능한 서비스
+
+## 화면 미리보기
+
+<img src="./docs/main-page.png" width="800"/>
 
 ## 프로젝트 인원
 
