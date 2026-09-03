@@ -1,5 +1,9 @@
 # lostarkcalc
 
+## 배포 링크
+
+- [https://loa-calc.akdfid.kr](https://loa-calc.akdfid.kr)
+
 ## Tech Stack
 
 <div align="left">
@@ -9,6 +13,10 @@
   <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>
   <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black"/>
   <img src="https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white"/>
+  <img src="https://img.shields.io/badge/OCI-F80000?style=for-the-badge&logo=oracle&logoColor=white"/>
+  <img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=nginx&logoColor=white"/>
+  <img src="https://img.shields.io/badge/PM2-2B037A?style=for-the-badge&logo=pm2&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=cloudflare&logoColor=white"/>
 </div>
 
 ## 로스트아크 계산기
@@ -56,6 +64,8 @@
 
 - TypeORM: Data Mapper 패턴을 활용한 효율적인 DB 스키마 설계 및 데이터 관리
 
+- Session 기반 인증: express-session과 파일 기반 세션 스토어(session-file-store)를 활용해 관리자 인증 상태를 서버에서 관리
+
 ### Frontend Development
 
 - React: 컴포넌트 기반 개발을 통한 재사용성 극대화 및 사용자 경험(UX) 중심 UI 구현
@@ -64,11 +74,13 @@
 
 ### Infrastructure & DevOps
 
+- 클라우드 마이그레이션 경험: AWS EC2 기반으로 운영하다 비용 효율화를 위해 OCI(Oracle Cloud Infrastructure)로 인프라를 이전, 자체 서버에서 MySQL/Nginx를 직접 구성 및 운영
+- GitHub Actions CI/CD: main 브랜치 push 시 빌드, 테스트, 서버 배포(pm2 재시작 포함)까지 자동화한 파이프라인 구축
 - Swagger: API 명세 자동화 및 프론트엔드-백엔드 간 원활한 협업 프로세스 구축
 
 ## 기능
 
-## 사용법 (프로젝트 받아서 사용시)
+### 사용법 (프로젝트 받아서 사용시)
 
 - 백엔드 env 파일 작성
 
